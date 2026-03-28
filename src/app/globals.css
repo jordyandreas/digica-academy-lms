@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  /* Prevent browser from applying force dark mode / color overrides */
+  color-scheme: light;
   --foreground: #171717;
+  /* Logo-derived palette */
+  --primary: #6c2b8d;
+  --primary-foreground: #ffffff;
+  --secondary: #b04e8a;
+  --secondary-foreground: #ffffff;
+  --tertiary: #e76e4b;
+  --tertiary-foreground: #ffffff;
+  /* Glass gradient – light (soft pastels: purple, purple, orange from logo) */
+  --gradient-glass: linear-gradient(
+    135deg,
+    #f5edfa 0%,
+    #f0edfa 40%,
+    #fdf2ef 100%
+  );
+  --glass-panel-bg: rgba(255, 255, 255, 0.85);
+  --glass-panel-border: rgba(0, 0, 0, 0.06);
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: var(--glass-panel-bg);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
+  min-height: 100vh;
+  background: var(--gradient-glass);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Floating glass panel over gradient */
+.glass-panel {
+  background: var(--glass-panel-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-panel-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Account drawer: Radix Presence waits for distinct animation names on exit */
+@keyframes account-drawer-enter {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes account-drawer-exit {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes account-overlay-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes account-overlay-exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.account-drawer-overlay[data-state="open"] {
+  animation: account-overlay-enter 0.3s ease-out forwards;
+}
+
+.account-drawer-overlay[data-state="closed"] {
+  animation: account-overlay-exit 0.28s ease-out forwards;
+}
+
+.account-drawer-panel[data-state="open"] {
+  animation: account-drawer-enter 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.account-drawer-panel[data-state="closed"] {
+  animation: account-drawer-exit 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
