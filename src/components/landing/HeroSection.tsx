@@ -98,8 +98,8 @@ export default function HeroSection() {
         <div className="absolute right-[-32px] top-6 h-40 w-40 rounded-full border border-primary-foreground/10" />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl gap-10 md:min-h-80 md:grid-cols-2 md:items-start md:gap-12 lg:min-h-88">
-        <div className="relative z-30 flex min-h-0 flex-col mt-[100px]">
+      <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 xl:min-h-[min(22rem,52svh)] xl:grid-cols-2 xl:items-start xl:gap-12 2xl:min-h-[min(26rem,58svh)]">
+        <div className="relative z-30 flex min-h-0 flex-col mt-[20px] mb-[30px] md:mt-[100px] md:mb-[0px]">
           <div className="flex min-h-0 flex-col">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
@@ -116,8 +116,8 @@ export default function HeroSection() {
                   <span>{slide.badge}</span>
                 </div>
 
-                <div className="min-h-44 space-y-3 sm:min-h-46 md:min-h-48">
-                  <h1 className="text-balance text-4xl font-bold leading-[1.12] tracking-tight sm:text-[2.5rem] md:text-5xl lg:text-[3.15rem]">
+                <div className="min-h-44 space-y-3 sm:min-h-46 md:min-h-48 xl:min-h-[min(13.5rem,32svh)]">
+                  <h1 className="text-balance text-4xl font-bold leading-[1.12] tracking-tight sm:text-[2.5rem] md:text-5xl xl:text-[3.15rem]">
                     {slide.title}
                   </h1>
                   <p className="max-w-lg text-base leading-relaxed text-primary-foreground/80 md:text-[1.05rem]">
@@ -160,7 +160,7 @@ export default function HeroSection() {
           </div>
 
           <div
-            className="mt-10 flex shrink-0 items-center gap-2 md:mt-8"
+            className="mt-10 flex shrink-0 items-center gap-2 md:mt-8 xl:mt-8"
             role="tablist"
             aria-label="Hero highlights"
           >
@@ -184,13 +184,13 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 flex min-h-[260px] justify-center md:min-h-[320px] md:self-end md:justify-end lg:min-h-[380px]">
+        <div className="relative z-10 hidden min-h-0 w-full xl:flex xl:min-h-[min(16rem,38svh)] xl:items-end xl:justify-end 2xl:min-h-[min(18rem,42svh)]">
           <div
-            className="pointer-events-none absolute bottom-0 left-1/2 h-48 w-[min(100%,24rem)] -translate-x-1/2 rounded-[50%] bg-linear-to-t from-primary-foreground/10 to-transparent blur-2xl md:left-auto md:right-0 md:translate-x-0"
+            className="pointer-events-none absolute bottom-0 right-0 h-48 w-[min(100%,24rem)] rounded-[50%] bg-linear-to-t from-primary-foreground/10 to-transparent blur-2xl"
             aria-hidden
           />
           <motion.div
-            className="relative h-full w-full max-w-md md:max-w-lg"
+            className="relative h-full w-full max-w-lg"
             initial={reduceMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -200,14 +200,13 @@ export default function HeroSection() {
               damping: 22,
             }}
           >
-            <div className="relative aspect-4/5 w-full max-w-md md:ml-auto md:max-w-none md:aspect-5/6">
+            <div className="relative ml-auto aspect-5/6 w-full max-w-md xl:max-w-[min(100%,26rem)] 2xl:max-w-[min(100%,32rem)]">
               <Image
                 src={HERO_CHARACTER_SRC}
                 alt="Digica Academy learner"
                 fill
                 className="object-contain object-bottom"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
+                sizes="(max-width: 1279px) 0px, min(32rem, 40vw)"
               />
             </div>
           </motion.div>
