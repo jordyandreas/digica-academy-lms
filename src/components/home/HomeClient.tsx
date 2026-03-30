@@ -70,7 +70,7 @@ export function HomeClient() {
           <div className="flex min-w-0 flex-1 items-center gap-0.5 sm:gap-2 lg:flex-none lg:gap-3">
             <Link
               href="/"
-              className="min-w-0 truncate bg-gradient-to-r from-[var(--primary)] via-[var(--secondary)] to-[var(--tertiary)] bg-clip-text text-sm font-semibold tracking-tight text-transparent sm:text-base"
+              className="min-w-0 truncate max-lg:order-2 bg-gradient-to-r from-[var(--primary)] via-[var(--secondary)] to-[var(--tertiary)] bg-clip-text text-sm font-semibold tracking-tight text-transparent sm:text-base"
             >
               Digica Academy
             </Link>
@@ -79,7 +79,7 @@ export function HomeClient() {
               variant="ghost"
               size="icon"
               className={cn(
-                "h-11 w-11 shrink-0 lg:hidden",
+                "h-11 w-11 shrink-0 max-lg:order-1 lg:hidden",
                 "text-zinc-700 hover:bg-zinc-100"
               )}
               aria-expanded={mobileNavOpen}

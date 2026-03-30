@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 const INTERVAL_MS = 6500;
 
-const HERO_TOP_PAD = "pt-8 md:pt-10 lg:pt-12";
+const HERO_PADDING = "py-8 md:py-10 lg:py-12 xl:pb-0";
 
 const HERO_CHARACTER_SRC = "/images/character/character_2.png";
 
@@ -89,7 +89,7 @@ export default function HeroSection() {
       id="hero"
       className={cn(
         "relative overflow-hidden border-b border-zinc-200/80 bg-linear-to-br from-primary to-secondary px-6 text-primary-foreground",
-        HERO_TOP_PAD,
+        HERO_PADDING,
       )}
       aria-roledescription="carousel"
     >
@@ -98,8 +98,8 @@ export default function HeroSection() {
         <div className="absolute right-[-32px] top-6 h-40 w-40 rounded-full border border-primary-foreground/10" />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 xl:min-h-[min(22rem,52svh)] xl:grid-cols-2 xl:items-start xl:gap-12 2xl:min-h-[min(26rem,58svh)]">
-        <div className="relative z-30 flex min-h-0 flex-col mt-[20px] mb-[30px] md:mt-[100px] md:mb-[0px]">
+      <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 xl:min-h-[min(22rem,52svh)] xl:grid-cols-2 xl:items-center xl:gap-12 2xl:min-h-[min(26rem,58svh)]">
+        <div className="relative z-30 flex min-h-0 flex-col">
           <div className="flex min-h-0 flex-col">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
