@@ -19,6 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -235,6 +236,7 @@ function LoggedInActions({
             "account-drawer-panel w-80 max-w-[85vw] overflow-hidden rounded-none border-l border-zinc-200 bg-white shadow-xl"
           )}
         >
+          <DialogTitle className="sr-only">Account menu</DialogTitle>
           <div className="flex h-full flex-col">
             <div className="border-b border-zinc-200 px-6 py-6">
               <div className="flex flex-col items-center text-center">
