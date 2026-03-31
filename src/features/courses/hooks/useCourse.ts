@@ -11,7 +11,7 @@ export function useCourse(courseSlug: string | null) {
     [courseSlug]
   );
 
-  const { isLessonCompleted, getCompletedLessons } = useLessonProgress();
+  const { isLessonCompleted, completedLessonIds } = useLessonProgress();
 
   const totalLessons = useMemo(() => {
     if (!course) return 0;
@@ -20,11 +20,11 @@ export function useCourse(courseSlug: string | null) {
 
   const completedCount = useMemo(() => {
     if (!course) return 0;
-    const completed = getCompletedLessons();
+    const completed = new Set(completedLessonIds);
     return course.modules.reduce((acc, m) => {
-      return acc + m.lessons.filter((l) => completed.includes(l.id)).length;
+      return acc + m.lessons.filter((l) => completed.has(l.id)).length;
     }, 0);
-  }, [course, getCompletedLessons]);
+  }, [course, completedLessonIds]);
 
   const progressPercent =
     totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;

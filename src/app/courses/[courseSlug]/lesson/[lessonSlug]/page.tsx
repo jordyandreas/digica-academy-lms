@@ -12,7 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ListCollapse } from "lucide-react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 function CourseLessonHeader({
   showLessonExpand,
@@ -44,8 +44,29 @@ function CourseLessonHeader({
   );
 }
 
+const MD_QUERY = "(min-width: 768px)";
+
+function subscribeMd(callback: () => void) {
+  const mq = window.matchMedia(MD_QUERY);
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+
+function getMdSnapshot() {
+  return window.matchMedia(MD_QUERY).matches;
+}
+
+function getServerMdSnapshot() {
+  return false;
+}
+
+function useMediaMd() {
+  return useSyncExternalStore(subscribeMd, getMdSnapshot, getServerMdSnapshot);
+}
+
 export default function LessonPage() {
   const reduceMotion = useReducedMotion();
+  const isMd = useMediaMd();
 
   const params = useParams();
   const courseSlug = params.courseSlug as string;
@@ -64,7 +85,7 @@ export default function LessonPage() {
 
   useEffect(() => {
     if (resolved?.lesson) markLessonVisited(resolved.lesson.id);
-  }, [resolved?.lesson?.id, markLessonVisited]);
+  }, [resolved?.lesson, markLessonVisited]);
 
   const handleMarkCompleted = () => {
     if (resolved?.lesson) markLessonCompleted(resolved.lesson.id);
@@ -75,7 +96,12 @@ export default function LessonPage() {
   const { course, lesson, module } = resolved;
   const completed = isLessonCompleted(lesson.id);
 
-  const [lessonPanelOpen, setLessonPanelOpen] = useState(true);
+  const [lessonPanelOpen, setLessonPanelOpen] = useState(false);
+  const [sidebarAnimated, setSidebarAnimated] = useState(false);
+
+  useEffect(() => {
+    setLessonPanelOpen(isMd);
+  }, [isMd]);
 
   const transition = reduceMotion
     ? { duration: 0 }
@@ -84,20 +110,33 @@ export default function LessonPage() {
   return (
     <div className="flex h-screen min-h-0 flex-col overflow-hidden">
       <div className="shrink-0 md:hidden">
-        <CourseLessonHeader />
+        <CourseLessonHeader
+          showLessonExpand
+          onLessonExpand={() => {
+            setSidebarAnimated(true);
+            setLessonPanelOpen((s) => !s);
+          }}
+        />
       </div>
       <div className="flex min-h-0 flex-1 flex-col md:flex-row md:overflow-hidden">
         <LessonCurriculum
           course={course}
           currentLesson={lesson}
           panelOpen={lessonPanelOpen}
-          onPanelOpenChange={setLessonPanelOpen}
+          onPanelOpenChange={(open) => {
+            setSidebarAnimated(true);
+            setLessonPanelOpen(open);
+          }}
+          desktopAnimate={sidebarAnimated}
         />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <div className="hidden md:block">
             <CourseLessonHeader
               showLessonExpand={!lessonPanelOpen}
-              onLessonExpand={() => setLessonPanelOpen(true)}
+              onLessonExpand={() => {
+                setSidebarAnimated(true);
+                setLessonPanelOpen(true);
+              }}
             />
           </div>
           <main className="min-h-0 flex-1 overflow-y-auto">

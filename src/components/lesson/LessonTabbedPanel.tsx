@@ -103,7 +103,7 @@ export function LessonTabbedPanel({
 
       <div className="border-b border-zinc-200/80 px-5 sm:px-6">
         <nav
-          className="-mb-px flex gap-5 overflow-x-auto pb-px sm:gap-6"
+          className="-mb-px flex gap-5 overflow-x-auto pb-px sm:gap-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           aria-label="Lesson sections"
         >
           {TABS.map((tab) => {
@@ -114,7 +114,7 @@ export function LessonTabbedPanel({
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "shrink-0 border-b-2 py-3 text-sm font-medium transition-colors",
+                  "shrink-0 whitespace-nowrap border-b-2 py-2.5 text-[13px] leading-none font-medium transition-colors sm:py-3 sm:text-sm",
                   isActive
                     ? "border-zinc-900 text-zinc-900"
                     : "border-transparent text-zinc-500 hover:text-zinc-700"
@@ -178,11 +178,19 @@ export function LessonTabbedPanel({
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-zinc-900">Your Skills</h3>
             {course.outcomes && course.outcomes.length > 0 ? (
-              <ul className="list-inside list-disc space-y-2 text-zinc-600">
-                {course.outcomes.map((o) => (
-                  <li key={o}>{o}</li>
-                ))}
-              </ul>
+              <div className="rounded-xl border border-primary/10 bg-linear-to-br from-primary/5 to-transparent py-3 pl-3 pr-3 sm:pl-4">
+                <ul className="space-y-2.5">
+                  {course.outcomes.map((o) => (
+                    <li key={o} className="flex gap-3 text-zinc-700">
+                      <span
+                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/70 shadow-sm ring-2 ring-primary/20"
+                        aria-hidden
+                      />
+                      <span className="min-w-0 flex-1">{o}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ) : (
               <p className="text-sm text-zinc-500">
                 Outcomes for this course will appear here.

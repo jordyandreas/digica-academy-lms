@@ -44,7 +44,9 @@ export function useAuth() {
 
   const login = useCallback((emailArg?: string | null) => {
     writeAuthSession(true, emailArg ?? undefined);
-  }, []);
+    router.replace("/");
+    router.refresh();
+  }, [router]);
 
   const logout = useCallback(() => {
     if (typeof window === "undefined") return;

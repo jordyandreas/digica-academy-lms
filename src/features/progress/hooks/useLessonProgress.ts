@@ -1,35 +1,72 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "completedLessons";
+const PROGRESS_CHANGE = "digica-lesson-progress-change";
 
-function getCompletedLessonsFromStorage(): Set<string> {
-  if (typeof window === "undefined") return new Set();
+function readIdsFromStorage(): string[] {
+  if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return new Set();
+    if (!raw) return [];
     const parsed = JSON.parse(raw) as string[];
-    return new Set(Array.isArray(parsed) ? parsed : []);
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return new Set();
+    return [];
   }
 }
 
+function getSnapshotString(): string {
+  const ids = readIdsFromStorage();
+  return JSON.stringify([...new Set(ids)].sort());
+}
+
+function subscribe(onStoreChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const go = () => onStoreChange();
+  window.addEventListener(PROGRESS_CHANGE, go);
+  window.addEventListener("storage", go);
+  return () => {
+    window.removeEventListener(PROGRESS_CHANGE, go);
+    window.removeEventListener("storage", go);
+  };
+}
+
+function getServerSnapshot() {
+  return "[]";
+}
+
+function getClientSnapshot() {
+  return getSnapshotString();
+}
+
 export function useLessonProgress() {
-  const [completed, setCompleted] = useState<Set<string>>(
-    () => getCompletedLessonsFromStorage()
+  const snap = useSyncExternalStore(
+    subscribe,
+    getClientSnapshot,
+    getServerSnapshot
   );
 
+  const completed = useMemo(() => {
+    try {
+      const ids = JSON.parse(snap) as string[];
+      return new Set<string>(Array.isArray(ids) ? ids : []);
+    } catch {
+      return new Set<string>();
+    }
+  }, [snap]);
+
   const getCompletedLessons = useCallback((): string[] => {
-    return Array.from(getCompletedLessonsFromStorage());
+    return readIdsFromStorage();
   }, []);
 
   const markLessonCompleted = useCallback((lessonId: string) => {
-    const set = getCompletedLessonsFromStorage();
+    if (typeof window === "undefined") return;
+    const set = new Set(readIdsFromStorage());
     set.add(lessonId);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set)));
-    setCompleted(new Set(set));
+    window.dispatchEvent(new Event(PROGRESS_CHANGE));
   }, []);
 
   const isLessonCompleted = useCallback(
@@ -38,7 +75,7 @@ export function useLessonProgress() {
   );
 
   const completedLessonIds = useMemo(
-    () => Array.from(completed),
+    () => Array.from(completed).sort(),
     [completed]
   );
 

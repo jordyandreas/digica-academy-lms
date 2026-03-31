@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useEffect, useSyncExternalStore } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useState, useSyncExternalStore } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Check,
   Circle,
   ListCollapse,
   Minus,
   Plus,
+  X,
 } from "lucide-react";
 import type { Course, Lesson, Module } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,8 @@ interface LessonCurriculumProps {
   currentLesson: Lesson;
   panelOpen: boolean;
   onPanelOpenChange: (open: boolean) => void;
+  /** Whether desktop width changes should animate (user-initiated toggles only). */
+  desktopAnimate?: boolean;
 }
 
 function moduleCompletionState(
@@ -51,33 +54,18 @@ function useMediaMd() {
   return useSyncExternalStore(subscribeMd, getMdSnapshot, getServerMdSnapshot);
 }
 
-const SIDEBAR_W = 288;
+const SIDEBAR_W = 320;
 
 export function LessonCurriculum({
   course,
   currentLesson,
   panelOpen,
   onPanelOpenChange,
+  desktopAnimate = false,
 }: LessonCurriculumProps) {
   const { isLessonCompleted } = useLessonProgress();
-  const reduceMotion = useReducedMotion();
   const isMd = useMediaMd();
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
-
-  const moduleContainingLesson = useMemo(() => {
-    return course.modules.find((m) =>
-      m.lessons.some((l) => l.id === currentLesson.id)
-    );
-  }, [course.modules, currentLesson.id]);
-
-  useEffect(() => {
-    if (moduleContainingLesson) {
-      setOpenModules((prev) => ({
-        ...prev,
-        [moduleContainingLesson.id]: true,
-      }));
-    }
-  }, [moduleContainingLesson?.id]);
 
   const toggleModule = (moduleId: string) => {
     setOpenModules((s) => ({ ...s, [moduleId]: !s[moduleId] }));
@@ -86,14 +74,12 @@ export function LessonCurriculum({
   const isModuleOpen = (m: Module) =>
     openModules[m.id] ?? m.lessons.some((l) => l.id === currentLesson.id);
 
-  const slideTransition = reduceMotion
-    ? { duration: 0 }
-    : { duration: 0.32, ease: [0.32, 0.72, 0, 1] as const };
+  const mobileDrawerTransition = { duration: 0.26, ease: [0.32, 0.72, 0, 1] as const };
 
   const sidebarInner = (
     <aside
       className={cn(
-        "glass-panel flex h-full min-h-0 w-full min-w-[288px] flex-col overflow-hidden border-b border-zinc-200/80",
+        "flex h-full min-h-0 w-full flex-col overflow-hidden border-b border-zinc-200/80 bg-white",
         "md:border-b-0 md:border-r"
       )}
     >
@@ -108,15 +94,19 @@ export function LessonCurriculum({
             type="button"
             variant="ghost"
             size="icon"
-            className="hidden h-9 w-9 text-zinc-600 md:inline-flex"
+            className="h-9 w-9 text-zinc-600"
             onClick={() => onPanelOpenChange(false)}
             aria-expanded={panelOpen}
             aria-label="Collapse lesson list"
           >
-            <ListCollapse
-              className="h-5 w-5 -scale-x-100"
-              aria-hidden
-            />
+            {panelOpen ? (
+              <X className="h-5 w-5" aria-hidden />
+            ) : (
+              <ListCollapse
+                className={cn("h-5 w-5", isMd && "-scale-x-100")}
+                aria-hidden
+              />
+            )}
           </Button>
         </div>
       </div>
@@ -133,7 +123,7 @@ export function LessonCurriculum({
               onToggle={() => toggleModule(module.id)}
               isLessonCompleted={isLessonCompleted}
               moduleCompletion={moduleCompletionState(module, isLessonCompleted)}
-              reduceMotion={!!reduceMotion}
+              reduceMotion={false}
             />
           ))}
         </div>
@@ -142,22 +132,63 @@ export function LessonCurriculum({
   );
 
   return (
-    <div className="relative flex h-full min-h-0 shrink-0 flex-col md:h-full md:flex-row">
+    <>
       {!isMd ? (
-        sidebarInner
+        <AnimatePresence>
+          {panelOpen ? (
+            <motion.div
+              key="lesson-curriculum-mobile"
+              className="fixed inset-0 z-50 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={mobileDrawerTransition}
+            >
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/40"
+                aria-label="Close lesson list"
+                onClick={() => onPanelOpenChange(false)}
+              />
+              <motion.div
+                className="absolute inset-y-0 left-0 w-[min(86vw,18rem)]"
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={mobileDrawerTransition}
+              >
+                <div className="h-full min-h-0 shadow-xl">{sidebarInner}</div>
+              </motion.div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       ) : (
-        <motion.div
-          className="h-full min-h-0 overflow-hidden"
-          initial={false}
-          animate={{
-            width: panelOpen ? SIDEBAR_W : 0,
-          }}
-          transition={slideTransition}
-        >
-          {sidebarInner}
-        </motion.div>
+        <div className="relative flex h-full min-h-0 shrink-0 flex-col md:h-full md:flex-row">
+          {desktopAnimate ? (
+            <motion.div
+              className="h-full min-h-0 overflow-hidden will-change-[width]"
+              initial={false}
+              animate={{ width: panelOpen ? SIDEBAR_W : 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 32,
+                mass: 0.85,
+              }}
+            >
+              {sidebarInner}
+            </motion.div>
+          ) : (
+            <div
+              className="h-full min-h-0 overflow-hidden"
+              style={{ width: panelOpen ? SIDEBAR_W : 0 }}
+            >
+              {sidebarInner}
+            </div>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -180,14 +211,17 @@ function ModuleBlock({
   onToggle,
   isLessonCompleted,
   moduleCompletion,
-  reduceMotion,
 }: ModuleBlockProps) {
   return (
     <div className="border-b border-zinc-100 last:border-b-0">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center gap-3 px-2 py-3 text-left transition-colors hover:bg-zinc-50/80 sm:px-3"
+        className={cn(
+          "flex w-full items-center gap-3 px-3 py-3 text-left transition-colors",
+          "bg-zinc-50/80 hover:bg-zinc-100/70",
+          "sm:px-4"
+        )}
       >
         <span className="flex h-6 w-6 shrink-0 items-center justify-center">
           {moduleCompletion === "done" ? (
@@ -198,7 +232,7 @@ function ModuleBlock({
             <Circle className="h-5 w-5 text-zinc-300" strokeWidth={1.5} />
           )}
         </span>
-        <span className="min-w-0 flex-1 font-semibold text-zinc-900">
+        <span className="min-w-0 flex-1 text-[13px] font-extrabold uppercase tracking-wide text-zinc-900">
           {module.title}
         </span>
         <span className="shrink-0 text-zinc-400" aria-hidden>
@@ -210,74 +244,64 @@ function ModuleBlock({
         </span>
       </button>
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={reduceMotion ? false : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
-            className="overflow-hidden"
-          >
-            <ul className="pb-1">
-              {module.lessons.map((lesson) => {
-                const href = `/courses/${courseSlug}/lesson/${lesson.slug}`;
-                const completed = isLessonCompleted(lesson.id);
-                const active = lesson.id === currentLessonId;
+      {isOpen && (
+        <div className="overflow-hidden">
+          <ul className="bg-white pb-1">
+            {module.lessons.map((lesson) => {
+              const href = `/courses/${courseSlug}/lesson/${lesson.slug}`;
+              const completed = isLessonCompleted(lesson.id);
+              const active = lesson.id === currentLessonId;
 
-                return (
-                  <li key={lesson.id}>
-                    <Link
-                      href={href}
-                      className={cn(
-                        "relative flex items-center gap-3 border-t border-zinc-100 px-2 py-3 transition-colors sm:px-4",
-                        active
-                          ? "bg-primary/6"
-                          : "hover:bg-zinc-50/80"
-                      )}
-                    >
-                      <span className="flex w-5 shrink-0 justify-center">
-                        {completed ? (
-                          <Check
-                            className="h-4 w-4 text-primary"
-                            strokeWidth={2.5}
-                          />
-                        ) : active ? (
-                          <span className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-primary" />
-                        ) : (
-                          <Circle
-                            className="h-4 w-4 text-zinc-300"
-                            strokeWidth={1.5}
-                          />
-                        )}
-                      </span>
-                      <span
-                        className={cn(
-                          "min-w-0 flex-1 text-sm",
-                          active
-                            ? "font-medium text-zinc-900"
-                            : "text-zinc-600"
-                        )}
-                      >
-                        {lesson.title}
-                      </span>
-                      <span className="shrink-0 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs text-zinc-600">
-                        {lesson.duration} min
-                      </span>
-                      {active && (
-                        <span
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                          aria-hidden
+              return (
+                <li key={lesson.id}>
+                  <Link
+                    href={href}
+                    className={cn(
+                      "relative flex items-center gap-3 border-t border-zinc-100 py-3 pl-10 pr-3 transition-colors sm:pl-12 sm:pr-4",
+                      active ? "bg-primary/7" : "hover:bg-zinc-50"
+                    )}
+                  >
+                    <span className="flex w-5 shrink-0 justify-center">
+                      {completed ? (
+                        <Check
+                          className="h-4 w-4 text-primary"
+                          strokeWidth={2.5}
+                        />
+                      ) : active ? (
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-primary" />
+                      ) : (
+                        <Circle
+                          className="h-4 w-4 text-zinc-300"
+                          strokeWidth={1.5}
                         />
                       )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    </span>
+                    <span
+                      className={cn(
+                        "min-w-0 flex-1 text-[13px] leading-snug",
+                        active
+                          ? "font-semibold text-zinc-900"
+                          : "text-zinc-600"
+                      )}
+                    >
+                      {lesson.title}
+                    </span>
+                    <span className="shrink-0 rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">
+                      {lesson.duration} min
+                    </span>
+                    {active && (
+                      <span
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                        aria-hidden
+                      />
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

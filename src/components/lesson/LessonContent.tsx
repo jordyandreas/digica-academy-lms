@@ -36,7 +36,7 @@ export function LessonContent({ content, className }: LessonContentProps) {
   return (
     <div
       className={cn(
-        "max-w-[65ch] space-y-5 text-[15px] leading-[1.7] text-zinc-700",
+        "w-full space-y-5 text-[15px] leading-[1.7] text-zinc-700",
         className
       )}
     >
@@ -65,7 +65,7 @@ export function LessonContent({ content, className }: LessonContentProps) {
           return (
             <h3
               key={i}
-              className="border-l-4 border-primary/40 pl-3 text-lg font-semibold tracking-tight text-zinc-900"
+              className="max-w-[65ch] border-l-4 border-primary/40 pl-3 text-lg font-semibold tracking-tight text-zinc-900"
             >
               {renderInline(block.slice(3))}
             </h3>
@@ -73,12 +73,14 @@ export function LessonContent({ content, className }: LessonContentProps) {
         }
 
         const lines = block.split("\n");
+        const trimmed = lines.map((l) => l.trim());
+        const nonEmpty = trimmed.filter(Boolean);
         const isBlockquote = lines.every((l) => l.startsWith("> "));
         if (isBlockquote && lines.length > 0) {
           return (
             <blockquote
               key={i}
-              className="rounded-r-lg border-l-4 border-primary/35 bg-primary/6 py-3 pl-4 pr-3 text-zinc-700 italic"
+              className="max-w-[65ch] rounded-r-lg border-l-4 border-primary/35 bg-primary/6 py-3 pl-4 pr-3 text-zinc-700 italic"
             >
               {lines.map((line, j) => (
                 <p key={j} className={j > 0 ? "mt-2" : undefined}>
@@ -89,14 +91,15 @@ export function LessonContent({ content, className }: LessonContentProps) {
           );
         }
 
-        const isList = lines.every((l) => l.startsWith("- "));
-        if (isList) {
+        // Pure list block (each non-empty line is "- ...")
+        const isPureList = nonEmpty.length > 0 && nonEmpty.every((l) => l.startsWith("- "));
+        if (isPureList) {
           return (
             <ul
               key={i}
-              className="my-1 space-y-2.5 rounded-xl border border-primary/10 bg-linear-to-br from-primary/5 to-transparent py-3 pl-3 pr-3 sm:pl-4"
+              className="my-1 w-full space-y-2.5 rounded-xl border border-primary/10 bg-linear-to-br from-primary/5 to-transparent py-3 pl-3 pr-3 sm:pl-4"
             >
-              {lines.map((line, j) => (
+              {nonEmpty.map((line, j) => (
                 <li key={j} className="flex gap-3 text-zinc-700">
                   <span
                     className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/70 shadow-sm ring-2 ring-primary/20"
@@ -111,8 +114,41 @@ export function LessonContent({ content, className }: LessonContentProps) {
           );
         }
 
+        // Header + list block in the same paragraph, e.g.
+        // "**Core ideas:**\n- Item 1\n- Item 2"
+        const firstListIdx = trimmed.findIndex((l) => l.startsWith("- "));
+        if (firstListIdx > 0) {
+          const beforeLines = trimmed.slice(0, firstListIdx).filter(Boolean);
+          const afterLines = trimmed.slice(firstListIdx).filter(Boolean);
+          const isAfterList =
+            afterLines.length > 0 && afterLines.every((l) => l.startsWith("- "));
+
+          if (isAfterList) {
+            return (
+              <div key={i} className="w-full space-y-2.5">
+                <p className="max-w-[65ch] font-semibold text-zinc-900">
+                  {renderInline(beforeLines.join("\n"))}
+                </p>
+                <ul className="my-1 w-full space-y-2.5 rounded-xl border border-primary/10 bg-linear-to-br from-primary/5 to-transparent py-3 pl-3 pr-3 sm:pl-4">
+                  {afterLines.map((line, j) => (
+                    <li key={j} className="flex gap-3 text-zinc-700">
+                      <span
+                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/70 shadow-sm ring-2 ring-primary/20"
+                        aria-hidden
+                      />
+                      <span className="min-w-0 flex-1">
+                        {renderInline(line.replace(/^- /, ""))}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          }
+        }
+
         return (
-          <p key={i} className="text-pretty">
+          <p key={i} className="max-w-[65ch] text-pretty">
             {renderInline(block)}
           </p>
         );

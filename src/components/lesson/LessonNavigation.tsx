@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Course, Lesson, Module } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ChevronRight } from "lucide-react";
 
 interface LessonNavigationProps {
   course: Course;
@@ -36,7 +36,7 @@ export function LessonNavigation({
         variant={isCompleted ? "secondary" : "default"}
         onClick={onMarkCompleted}
         disabled={isCompleted}
-        className="gap-2"
+        className="gap-2 rounded-lg px-5 sm:px-6"
       >
         {isCompleted ? (
           <>
@@ -48,13 +48,25 @@ export function LessonNavigation({
         )}
       </Button>
       {next ? (
-        <Button asChild variant="default" className="gap-2">
+        <Button
+          asChild
+          variant="default"
+          className="gap-2 rounded-lg px-5 sm:px-6"
+        >
           <Link href={`/courses/${course.slug}/lesson/${next.lesson.slug}`}>
-            Next: {next.lesson.title}
+            <span className="hidden sm:inline">Next:</span>{" "}
+            <span className="truncate max-w-44 align-middle sm:max-w-xs">
+              {next.lesson.title}
+            </span>
+            <ChevronRight className="ml-1 h-4 w-4 shrink-0" />
           </Link>
         </Button>
       ) : (
-        <Button asChild variant="outline">
+        <Button
+          asChild
+          variant="outline"
+          className="rounded-lg px-5 sm:px-6"
+        >
           <Link href={`/courses/${course.slug}`}>Back to course</Link>
         </Button>
       )}

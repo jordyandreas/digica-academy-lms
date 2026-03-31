@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   PenTool,
@@ -12,6 +13,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { Course } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { useCourse } from "@/features/courses/hooks/useCourse";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { AuthModal } from "@/components/auth/AuthModal";
 
 const iconProps = {
   className: "h-6 w-6",
@@ -41,6 +44,8 @@ interface CourseCardProps {
 export function CourseCard({ course, variant = "default" }: CourseCardProps) {
   const reduceMotion = useReducedMotion();
   const { progressPercent } = useCourse(course.slug);
+  const { isLoggedIn, login } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const isEnrolled = variant === "enrolled";
   const sessionsLabel =
     typeof course.sessions === "number"
@@ -143,6 +148,12 @@ export function CourseCard({ course, variant = "default" }: CourseCardProps) {
                   : `Enroll in ${course.title}`
               }
               className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary px-3 py-2 text-[11px] font-semibold text-primary-foreground shadow-sm ring-1 ring-primary/25 transition-colors hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              onClick={(e) => {
+                if (isEnrolled) return;
+                if (isLoggedIn) return;
+                e.preventDefault();
+                setAuthModalOpen(true);
+              }}
             >
               <ChevronsRight className="h-3.5 w-3.5 opacity-90" aria-hidden />
               {isEnrolled ? "Continue learning" : "Enroll now"}
@@ -150,6 +161,12 @@ export function CourseCard({ course, variant = "default" }: CourseCardProps) {
           </div>
         </div>
       </Card>
+
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        onLogin={(e) => login(e ?? undefined)}
+      />
     </motion.div>
   );
 }
