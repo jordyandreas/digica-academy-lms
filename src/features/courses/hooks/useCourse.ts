@@ -1,16 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import { getCourseBySlug } from "@/features/courses/data/courses";
 import type { Course } from "@/lib/types";
 import { useLessonProgress } from "@/features/progress/hooks/useLessonProgress";
 
-export function useCourse(courseSlug: string | null) {
-  const course = useMemo(
-    () => (courseSlug ? getCourseBySlug(courseSlug) : undefined),
-    [courseSlug]
-  );
-
+export function useCourse(course: Course | null | undefined) {
   const { isLessonCompleted, completedLessonIds } = useLessonProgress();
 
   const totalLessons = useMemo(() => {

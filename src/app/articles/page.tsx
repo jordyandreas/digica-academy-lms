@@ -7,7 +7,7 @@ import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Articles | Digica Academy",
+  title: "Articles",
   description:
     "Insights, stories, and frameworks from Digica Academy—data, product, and design in practice.",
 };
@@ -32,7 +32,7 @@ export default function ArticlesIndexPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
             Latest from the blog
           </p>
-          <h1 className="text-balance text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
+          <h1 className="font-display text-balance text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
             Insights, stories, and frameworks
           </h1>
           <p className="max-w-2xl text-sm leading-relaxed text-zinc-600 md:text-[15px]">

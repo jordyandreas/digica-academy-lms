@@ -1,21 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { HashLink } from "@/components/layout/HashLink";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  HeroSlideArt,
+  type HeroArtVariant,
+} from "@/components/landing/HeroSlideArt";
 import { cn } from "@/lib/utils";
 
 const INTERVAL_MS = 6500;
 
-const HERO_PADDING = "py-8 md:py-10 lg:py-12 xl:pb-0";
-
-const HERO_CHARACTER_SRC = "/images/character/character_2.png";
+const HERO_PADDING = "py-8 md:py-10 lg:py-12";
 
 type HeroSlide = {
-  id: string;
+  id: HeroArtVariant;
   badge: string;
   title: React.ReactNode;
   description: string;
@@ -72,7 +73,6 @@ const fadeY = {
 };
 
 export default function HeroSection() {
-  const reduceMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
   const slide = slides[index]!;
   const reserveCtaSlot = slides.some((s) => s.showCtas);
@@ -98,7 +98,7 @@ export default function HeroSection() {
         <div className="absolute right-[-32px] top-6 h-40 w-40 rounded-full border border-primary-foreground/10" />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 xl:min-h-[min(22rem,52svh)] xl:grid-cols-2 xl:items-center xl:gap-12 2xl:min-h-[min(26rem,58svh)]">
+      <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-10 xl:min-h-[min(22rem,52svh)] xl:gap-12">
         <div className="relative z-30 flex min-h-0 flex-col">
           <div className="flex min-h-0 flex-col">
             <AnimatePresence mode="wait" initial={false}>
@@ -116,8 +116,8 @@ export default function HeroSection() {
                   <span>{slide.badge}</span>
                 </div>
 
-                <div className="min-h-44 space-y-3 sm:min-h-46 md:min-h-48 xl:min-h-[min(13.5rem,32svh)]">
-                  <h1 className="text-balance text-4xl font-bold leading-[1.12] tracking-tight sm:text-[2.5rem] md:text-5xl xl:text-[3.15rem]">
+                <div className="min-h-44 space-y-3 sm:min-h-46 md:min-h-48">
+                  <h1 className="font-display text-balance text-4xl font-bold leading-[1.12] tracking-tight sm:text-[2.5rem] md:text-5xl xl:text-[3.15rem]">
                     {slide.title}
                   </h1>
                   <p className="max-w-lg text-base leading-relaxed text-primary-foreground/80 md:text-[1.05rem]">
@@ -141,18 +141,10 @@ export default function HeroSection() {
                     size="lg"
                     className="rounded-full bg-primary-foreground px-8 text-primary shadow-md shadow-black/10 hover:bg-primary-foreground/90"
                   >
-                    <Link href="#courses">
-                      Explore Courses
+                    <HashLink href="#programs">
+                      View Programs
                       <ChevronRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="rounded-full border-2 border-primary-foreground/40 bg-transparent px-8 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-                  >
-                    <Link href="#courses">Join Bootcamp</Link>
+                    </HashLink>
                   </Button>
                 </div>
               ) : null}
@@ -184,32 +176,19 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 hidden min-h-0 w-full xl:flex xl:min-h-[min(16rem,38svh)] xl:items-end xl:justify-end 2xl:min-h-[min(18rem,42svh)]">
-          <div
-            className="pointer-events-none absolute bottom-0 right-0 h-48 w-[min(100%,24rem)] rounded-[50%] bg-linear-to-t from-primary-foreground/10 to-transparent blur-2xl"
-            aria-hidden
-          />
-          <motion.div
-            className="relative h-full w-full max-w-lg"
-            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: reduceMotion ? 0 : 0.08,
-              type: "spring",
-              stiffness: 180,
-              damping: 22,
-            }}
-          >
-            <div className="relative ml-auto aspect-5/6 w-full max-w-md xl:max-w-[min(100%,26rem)] 2xl:max-w-[min(100%,32rem)]">
-              <Image
-                src={HERO_CHARACTER_SRC}
-                alt="Digica Academy learner"
-                fill
-                className="object-contain object-bottom"
-                sizes="(max-width: 1279px) 0px, min(32rem, 40vw)"
-              />
-            </div>
-          </motion.div>
+        <div className="relative z-10 hidden min-h-0 w-full lg:flex lg:min-h-[18rem] lg:items-center lg:justify-end xl:min-h-[min(18rem,42svh)]">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={slide.id}
+              className="w-full max-w-xl"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <HeroSlideArt variant={slide.id} />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>

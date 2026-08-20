@@ -1,16 +1,28 @@
 import HeroSection from "@/components/landing/HeroSection";
 import SocialProof from "@/components/landing/SocialProof";
+import ProgramsSection from "@/components/landing/ProgramsSection";
 import CoursesSection from "@/components/landing/CoursesSection";
 import SkillsSection from "@/components/landing/SkillsSection";
-import ExperienceSection from "@/components/landing/ExperienceSection";
+import { ARTICLES_ENABLED, COURSES_ENABLED } from "@/constants/features";
 import Testimonials from "@/components/landing/Testimonials";
 import Instructor from "@/components/landing/Instructor";
 import HowItWorks from "@/components/landing/HowItWorks";
 import ArticlesSection from "@/components/landing/ArticlesSection";
 import FAQ from "@/components/landing/FAQ";
+import FinalCTA from "@/components/landing/FinalCTA";
 import { Reveal } from "@/components/motion/Reveal";
+import type { PublicProgramsResult } from "@/features/programs/types";
+import type { Course } from "@/lib/types";
 
-export function GuestLandingMain() {
+type GuestLandingMainProps = {
+  programsResult: PublicProgramsResult;
+  courses: Course[];
+};
+
+export function GuestLandingMain({
+  programsResult,
+  courses,
+}: GuestLandingMainProps) {
   return (
     <>
       <Reveal>
@@ -20,28 +32,39 @@ export function GuestLandingMain() {
         <SocialProof />
       </Reveal>
       <Reveal>
-        <CoursesSection />
+        <ProgramsSection
+          result={programsResult}
+          limit={3}
+          seeAllHref="/programs"
+        />
+      </Reveal>
+      {COURSES_ENABLED ? (
+        <Reveal>
+          <CoursesSection courses={courses} />
+        </Reveal>
+      ) : null}
+      <Reveal>
+        <HowItWorks />
       </Reveal>
       <Reveal>
         <SkillsSection />
       </Reveal>
       <Reveal>
-        <ExperienceSection />
+        <Instructor />
       </Reveal>
       <Reveal>
         <Testimonials />
       </Reveal>
-      <Reveal>
-        <Instructor />
-      </Reveal>
-      <Reveal>
-        <HowItWorks />
-      </Reveal>
-      <Reveal>
-        <ArticlesSection />
-      </Reveal>
+      {ARTICLES_ENABLED ? (
+        <Reveal>
+          <ArticlesSection />
+        </Reveal>
+      ) : null}
       <Reveal>
         <FAQ />
+      </Reveal>
+      <Reveal>
+        <FinalCTA />
       </Reveal>
     </>
   );

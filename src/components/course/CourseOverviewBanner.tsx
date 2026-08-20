@@ -34,10 +34,8 @@ function splitInstructorCredentials(credentials: string) {
 
 export function CourseOverviewBanner({ course }: CourseOverviewBannerProps) {
   const reduceMotion = useReducedMotion();
-  const { isPurchased, purchaseCourse, isLessonVisited } = useCourseAccess();
-  const { totalLessons, completedCount, isLessonCompleted } = useCourse(
-    course.slug
-  );
+  const { isPurchased, isLessonVisited } = useCourseAccess();
+  const { totalLessons, completedCount, isLessonCompleted } = useCourse(course);
   const [enrolledFlash, setEnrolledFlash] = useState(false);
 
   const purchased = isPurchased(course.slug);
@@ -73,10 +71,9 @@ export function CourseOverviewBanner({ course }: CourseOverviewBannerProps) {
   }, [course.instructor]);
 
   const handlePurchase = useCallback(() => {
-    purchaseCourse(course.slug);
     setEnrolledFlash(true);
     window.setTimeout(() => setEnrolledFlash(false), 3800);
-  }, [course.slug, purchaseCourse]);
+  }, []);
 
   const contentSpring = reduceMotion
     ? { duration: 0 }
@@ -137,7 +134,7 @@ export function CourseOverviewBanner({ course }: CourseOverviewBannerProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...contentSpring, delay: reduceMotion ? 0 : 0.05 }}
           >
-            <h1 className="text-balance text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+            <h1 className="font-display text-balance text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
               {course.title}
             </h1>
             <p className="max-w-xl text-sm leading-relaxed text-primary-foreground/80">
@@ -169,7 +166,7 @@ export function CourseOverviewBanner({ course }: CourseOverviewBannerProps) {
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: reduceMotion ? 0 : 0.25 }}
               >
-                <CourseProgress courseSlug={course.slug} variant="onPrimary" />
+                <CourseProgress course={course} variant="onPrimary" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -244,7 +241,7 @@ export function CourseOverviewBanner({ course }: CourseOverviewBannerProps) {
                     </Button>
                   </motion.div>
                   <div className="flex min-w-0 flex-wrap gap-x-2.5 gap-y-1 items-center">
-                    <span className="text-4xl font-bold tabular-nums tracking-tight text-primary-foreground sm:text-5xl">
+                    <span className="font-display text-4xl font-bold tabular-nums tracking-tight text-primary-foreground sm:text-5xl">
                       {course.priceLabel ?? "—"}
                     </span>
                     {course.priceCompareLabel ? (
@@ -257,7 +254,8 @@ export function CourseOverviewBanner({ course }: CourseOverviewBannerProps) {
               )}
               <p className="text-xs text-primary-foreground/65">
                 {purchased
-                  && "Jump into the first lesson or pick one below."}
+                  ? "Jump into the first lesson or pick one below."
+                  : "Enrollment is granted by Digica. In-app checkout is not available yet."}
               </p>
             </div>
 
@@ -271,7 +269,8 @@ export function CourseOverviewBanner({ course }: CourseOverviewBannerProps) {
                   className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/15 px-4 py-2 text-xs font-medium text-primary-foreground backdrop-blur"
                 >
                   <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                  You&apos;re in — scroll down to start your lessons.
+                  Checkout is not live yet. Digica grants access from the admin
+                  side.
                 </motion.div>
               )}
             </AnimatePresence>

@@ -4,6 +4,7 @@ import { CoursesCatalogGrid } from "@/components/course/CoursesCatalogGrid";
 import { Button } from "@/components/ui/button";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
 import { ChevronLeft } from "lucide-react";
+import { getPublishedCourses } from "@/features/courses/getPublishedCourses";
 
 function CatalogFallback() {
   return (
@@ -18,7 +19,9 @@ function CatalogFallback() {
   );
 }
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const courses = await getPublishedCourses();
+
   return (
     <div className="min-h-screen">
       <header className="glass-panel border-b border-zinc-200/80">
@@ -34,7 +37,7 @@ export default function CoursesPage() {
       </header>
       <main className="mx-auto max-w-6xl px-4 py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-zinc-900">
             Courses
           </h1>
           <p className="mt-1 text-zinc-600">
@@ -42,7 +45,7 @@ export default function CoursesPage() {
           </p>
         </div>
         <Suspense fallback={<CatalogFallback />}>
-          <CoursesCatalogGrid />
+          <CoursesCatalogGrid courses={courses} />
         </Suspense>
       </main>
     </div>

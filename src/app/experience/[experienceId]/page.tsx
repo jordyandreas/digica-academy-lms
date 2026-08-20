@@ -25,10 +25,10 @@ export async function generateMetadata({
   const { experienceId } = await params;
   const point = getExperiencePointById(experienceId);
   if (!point) {
-    return { title: "Learning experience | Digica Academy" };
+    return { title: "Learning experience" };
   }
   return {
-    title: `${point.title} | Digica Academy`,
+    title: point.title,
     description: point.description,
   };
 }
@@ -46,7 +46,7 @@ export default async function ExperienceDetailPage({ params }: ExperienceDetailP
       <header className="glass-panel sticky top-0 z-10 border-b border-zinc-200/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Button asChild variant="ghost" size="sm" className="gap-2 text-primary">
-            <Link href="/#experience">
+            <Link href="/#curriculum">
               <ChevronLeft className="h-4 w-4" />
               Experience
             </Link>
@@ -64,7 +64,7 @@ export default async function ExperienceDetailPage({ params }: ExperienceDetailP
         <header className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm">
           <div className="flex items-start justify-between gap-4 border-b border-zinc-100 bg-secondary/5 px-6 py-6 md:px-8 md:py-8">
             <div className="min-w-0 space-y-2">
-              <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
+              <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
                 {point.title}
               </h1>
               <p className="text-sm leading-relaxed text-zinc-600 md:text-[15px]">
@@ -90,7 +90,7 @@ export default async function ExperienceDetailPage({ params }: ExperienceDetailP
           </p>
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="outline" className="rounded-full">
-              <Link href="/#experience">All pillars</Link>
+              <Link href="/#curriculum">All pillars</Link>
             </Button>
             <Button asChild className="rounded-full">
               <Link href="/courses">Browse courses</Link>

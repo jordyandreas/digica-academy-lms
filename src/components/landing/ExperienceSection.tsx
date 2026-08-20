@@ -18,7 +18,7 @@ export default function ExperienceSection() {
 
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
+            <h2 className="font-display text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
               A learning experience built for shipping
             </h2>
             <p className="max-w-xl text-sm text-zinc-600 md:text-[0.95rem]">

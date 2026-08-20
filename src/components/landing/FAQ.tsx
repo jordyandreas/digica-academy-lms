@@ -43,10 +43,10 @@ export default function FAQ() {
       <div className="mx-auto flex max-w-6xl flex-col gap-10 md:grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)] md:items-start">
         <div className="space-y-5">
           <span className="inline-flex items-center rounded-full bg-tertiary/10 px-3 py-1 text-xs font-medium tracking-wide text-tertiary ring-1 ring-tertiary/20">
-            Testimonial
+            FAQ
           </span>
           <div className="space-y-3">
-            <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl md:text-4xl">
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl md:text-4xl">
               Frequently asked
               <br className="hidden sm:block" />
               Questions

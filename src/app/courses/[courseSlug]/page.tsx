@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCourseBySlug } from "@/features/courses/data/courses";
+import { getCourseBySlug } from "@/features/courses/getPublishedCourses";
 import { CourseOverviewBanner } from "@/components/course/CourseOverviewBanner";
 import { CourseLessonCards } from "@/components/course/CourseLessonCards";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ interface CoursePageProps {
 
 export default async function CoursePage({ params }: CoursePageProps) {
   const { courseSlug } = await params;
-  const course = getCourseBySlug(courseSlug);
+  const course = await getCourseBySlug(courseSlug);
 
   if (!course) notFound();
 

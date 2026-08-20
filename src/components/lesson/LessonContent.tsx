@@ -36,7 +36,7 @@ export function LessonContent({ content, className }: LessonContentProps) {
   return (
     <div
       className={cn(
-        "w-full space-y-5 text-[15px] leading-[1.7] text-zinc-700",
+        "font-lesson w-full space-y-5 text-[15px] leading-[1.7] text-zinc-700",
         className
       )}
     >

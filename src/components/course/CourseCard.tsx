@@ -15,6 +15,7 @@ import { Card } from "@/components/ui/card";
 import { useCourse } from "@/features/courses/hooks/useCourse";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { AuthModal } from "@/components/auth/AuthModal";
+import { PUBLIC_AUTH_ENABLED } from "@/constants/features";
 
 const iconProps = {
   className: "h-6 w-6",
@@ -43,8 +44,8 @@ interface CourseCardProps {
 
 export function CourseCard({ course, variant = "default" }: CourseCardProps) {
   const reduceMotion = useReducedMotion();
-  const { progressPercent } = useCourse(course.slug);
-  const { isLoggedIn, login } = useAuth();
+  const { progressPercent } = useCourse(course);
+  const { isLoggedIn } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const isEnrolled = variant === "enrolled";
   const sessionsLabel =
@@ -151,6 +152,7 @@ export function CourseCard({ course, variant = "default" }: CourseCardProps) {
               onClick={(e) => {
                 if (isEnrolled) return;
                 if (isLoggedIn) return;
+                if (!PUBLIC_AUTH_ENABLED) return;
                 e.preventDefault();
                 setAuthModalOpen(true);
               }}
@@ -162,11 +164,12 @@ export function CourseCard({ course, variant = "default" }: CourseCardProps) {
         </div>
       </Card>
 
-      <AuthModal
-        open={authModalOpen}
-        onOpenChange={setAuthModalOpen}
-        onLogin={(e) => login(e ?? undefined)}
-      />
+      {PUBLIC_AUTH_ENABLED ? (
+        <AuthModal
+          open={authModalOpen}
+          onOpenChange={setAuthModalOpen}
+        />
+      ) : null}
     </motion.div>
   );
 }

@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { courses } from "@/features/courses/data/courses";
+import type { Course } from "@/lib/types";
 import { useCourseAccess } from "@/features/courses/hooks/useCourseAccess";
 import { CourseCard } from "@/components/course/CourseCard";
 import { getExploreCategoryLabel } from "@/lib/exploreCategories";
 import { X } from "lucide-react";
 
-export function CoursesCatalogGrid() {
+export function CoursesCatalogGrid({ courses }: { courses: Course[] }) {
   const { isPurchased } = useCourseAccess();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("category");

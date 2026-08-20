@@ -6,19 +6,20 @@ import { BookOpen, PlayCircle } from "lucide-react";
 import { CourseCard } from "@/components/course/CourseCard";
 import CoursesSection from "@/components/landing/CoursesSection";
 import ArticlesSection from "@/components/landing/ArticlesSection";
-import ExploreCategoriesSection from "@/components/landing/ExploreCategoriesSection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCourseAccess } from "@/features/courses/hooks/useCourseAccess";
 import {
-  courses,
-  getCourseBySlug,
   getFirstIncompleteLesson,
   getLessonLocationByLessonId,
-} from "@/features/courses/data/courses";
+} from "@/features/courses/mapCourse";
 import { useLessonProgress } from "@/features/progress/hooks/useLessonProgress";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Reveal } from "@/components/motion/Reveal";
+import ProgramsSection from "@/components/landing/ProgramsSection";
+import type { PublicProgramsResult } from "@/features/programs/types";
+import type { Course } from "@/lib/types";
+import { ARTICLES_ENABLED, COURSES_ENABLED } from "@/constants/features";
 
 type ResumeInfo = {
   href: string;
@@ -26,17 +27,26 @@ type ResumeInfo = {
   courseTitle: string;
 };
 
-export function AuthenticatedHome() {
-  const { email } = useAuth();
+type AuthenticatedHomeProps = {
+  programsResult: PublicProgramsResult;
+  courses: Course[];
+};
+
+export function AuthenticatedHome({
+  programsResult,
+  courses,
+}: AuthenticatedHomeProps) {
+  const { displayName: authDisplayName } = useAuth();
   const { purchasedCourseSlugs, visitedLessonIds } = useCourseAccess();
   const { completedLessonIds } = useLessonProgress();
 
   const resume = useMemo((): ResumeInfo | null => {
     const completed = new Set(completedLessonIds);
+    const bySlug = new Map(courses.map((course) => [course.slug, course]));
 
     if (visitedLessonIds.length > 0) {
       const lastId = visitedLessonIds[visitedLessonIds.length - 1];
-      const loc = getLessonLocationByLessonId(lastId);
+      const loc = getLessonLocationByLessonId(courses, lastId);
       if (loc) {
         return {
           href: `/courses/${loc.courseSlug}/lesson/${loc.lessonSlug}`,
@@ -47,19 +57,19 @@ export function AuthenticatedHome() {
     }
 
     for (const slug of purchasedCourseSlugs) {
-      const next = getFirstIncompleteLesson(slug, completed);
-      if (next) {
-        const course = getCourseBySlug(slug);
+      const course = bySlug.get(slug);
+      const next = getFirstIncompleteLesson(course, completed);
+      if (next && course) {
         return {
           href: `/courses/${slug}/lesson/${next.lessonSlug}`,
           lessonTitle: next.lessonTitle,
-          courseTitle: course?.title ?? slug,
+          courseTitle: course.title,
         };
       }
     }
 
     for (const slug of purchasedCourseSlugs) {
-      const course = getCourseBySlug(slug);
+      const course = bySlug.get(slug);
       const first = course?.modules[0]?.lessons[0];
       if (course && first) {
         return {
@@ -71,9 +81,9 @@ export function AuthenticatedHome() {
     }
 
     return null;
-  }, [purchasedCourseSlugs, visitedLessonIds, completedLessonIds]);
+  }, [courses, purchasedCourseSlugs, visitedLessonIds, completedLessonIds]);
 
-  const displayName = email?.split("@")[0]?.trim() || "there";
+  const displayName = authDisplayName || "there";
   const purchasedCourses = courses.filter((c) =>
     purchasedCourseSlugs.includes(c.slug)
   );
@@ -85,15 +95,18 @@ export function AuthenticatedHome() {
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary/80">
             Your dashboard
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
             Welcome back, {displayName}
           </h1>
           <p className="max-w-xl text-sm text-zinc-600 md:text-base">
-            Pick up where you left off or explore a new course.
+            {COURSES_ENABLED
+              ? "Pick up where you left off or explore a new course."
+              : "Browse upcoming workshops and bootcamps, then register for a program."}
           </p>
         </div>
       </section>
 
+      {COURSES_ENABLED ? (
       <Reveal>
         <section className="px-6 py-10 md:py-12">
           <div className="mx-auto max-w-6xl">
@@ -140,12 +153,23 @@ export function AuthenticatedHome() {
           </div>
         </section>
       </Reveal>
+      ) : null}
 
+      <Reveal>
+        <ProgramsSection
+          result={programsResult}
+          limit={3}
+          seeAllHref="/programs"
+        />
+      </Reveal>
+
+      {COURSES_ENABLED ? (
+      <>
       <Reveal>
         <section id="my-courses" className="scroll-mt-24 px-6 py-10 md:py-12">
           <div className="mx-auto max-w-6xl space-y-8">
             <div className="space-y-2">
-              <h2 className="text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
+              <h2 className="font-display text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
                 My courses
               </h2>
               <p className="max-w-xl text-sm text-zinc-600">
@@ -180,6 +204,7 @@ export function AuthenticatedHome() {
 
       <Reveal>
         <CoursesSection
+          courses={courses}
           sectionId="courses"
           heading="Explore more courses"
           description="Discover additional programs to grow your data and analytics skills."
@@ -187,14 +212,14 @@ export function AuthenticatedHome() {
           excludeSlugs={purchasedCourseSlugs}
         />
       </Reveal>
+      </>
+      ) : null}
 
-      <Reveal>
-        <ArticlesSection />
-      </Reveal>
-
-      <Reveal>
-        <ExploreCategoriesSection />
-      </Reveal>
+      {ARTICLES_ENABLED ? (
+        <Reveal>
+          <ArticlesSection />
+        </Reveal>
+      ) : null}
     </>
   );
 }

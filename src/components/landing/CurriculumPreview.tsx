@@ -13,7 +13,7 @@ export default function CurriculumPreview() {
     <section className="border-y border-zinc-200/80 bg-white/70 px-6 py-16 md:py-20">
       <div className="mx-auto max-w-6xl space-y-8">
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
+          <h2 className="font-display text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
             Curriculum preview · SQL Bootcamp
           </h2>
           <p className="max-w-xl text-sm text-zinc-600 md:text-[0.95rem]">

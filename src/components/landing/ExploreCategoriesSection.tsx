@@ -47,7 +47,7 @@ export default function ExploreCategoriesSection() {
       <div className="mx-auto max-w-6xl">
         <h2
           id="explore-categories-heading"
-          className="text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl"
+          className="font-display text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl"
         >
           Explore Categories
         </h2>

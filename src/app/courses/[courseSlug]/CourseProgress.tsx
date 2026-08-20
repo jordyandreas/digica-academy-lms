@@ -1,19 +1,20 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import type { Course } from "@/lib/types";
 import { useCourse } from "@/features/courses/hooks/useCourse";
 
 interface CourseProgressProps {
-  courseSlug: string;
+  course: Course;
   /** Use on primary gradient heroes (light text / glass on color). */
   variant?: "default" | "onPrimary";
 }
 
 export function CourseProgress({
-  courseSlug,
+  course,
   variant = "default",
 }: CourseProgressProps) {
-  const { progressPercent, completedCount, totalLessons } = useCourse(courseSlug);
+  const { progressPercent, completedCount, totalLessons } = useCourse(course);
   const reduceMotion = useReducedMotion();
 
   if (totalLessons === 0) return null;

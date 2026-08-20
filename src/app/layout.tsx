@@ -1,21 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Plus_Jakarta_Sans, Sora } from "next/font/google";
+import { Toaster } from "sonner";
+import { buildRootMetadata } from "@/features/seo/site-metadata";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const sora = Sora({
+  variable: "--font-sora",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Digica Academy | LMS",
-  description: "Learn React, TypeScript, and Next.js with Digica Academy.",
-};
+export const metadata: Metadata = buildRootMetadata();
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -29,15 +35,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
+    <html lang="en"><head>
         <meta name="color-scheme" content="light" />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      </head><body
+        className={`${plusJakarta.variable} ${sora.variable} ${geistMono.variable} font-sans antialiased`}
       >
         {children}
-      </body>
-    </html>
+        <Toaster richColors closeButton position="top-center" />
+      </body></html>
   );
 }

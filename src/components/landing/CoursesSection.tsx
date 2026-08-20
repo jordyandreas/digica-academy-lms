@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { CourseCard } from "@/components/course/CourseCard";
-import { courses } from "@/features/courses/data/courses";
+import type { Course } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 
 const FEATURED_COURSES_SLUGS = [
@@ -13,6 +13,7 @@ const FEATURED_COURSES_SLUGS = [
 ];
 
 type CoursesSectionProps = {
+  courses: Course[];
   sectionId?: string;
   heading?: string;
   description?: string;
@@ -22,16 +23,20 @@ type CoursesSectionProps = {
 };
 
 export default function CoursesSection({
+  courses,
   sectionId = "courses",
   heading = "Explore our courses",
   description = "Hand-picked programs to help you level up your design and tech career, guided by practitioners who build in production every day.",
   showTagline = true,
   excludeSlugs,
-}: CoursesSectionProps = {}) {
+}: CoursesSectionProps) {
   const reduceMotion = useReducedMotion();
-  const featuredCourses = courses.filter((c) =>
-    FEATURED_COURSES_SLUGS.includes(c.slug)
-  );
+  const featuredCourses = (() => {
+    const featured = courses.filter((c) =>
+      FEATURED_COURSES_SLUGS.includes(c.slug)
+    );
+    return featured.length > 0 ? featured : courses.slice(0, 3);
+  })();
   const excluded = new Set(excludeSlugs ?? []);
   const visibleCourses =
     excludeSlugs === undefined
@@ -71,7 +76,7 @@ export default function CoursesSection({
       <div className="mx-auto max-w-6xl space-y-8">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
+            <h2 className="font-display text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
               {heading}
             </h2>
             <p className="max-w-xl text-sm text-zinc-600 md:text-[0.95rem]">

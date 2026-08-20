@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
@@ -28,7 +29,7 @@ interface CourseLessonCardsProps {
 export function CourseLessonCards({ course }: CourseLessonCardsProps) {
   const reduceMotion = useReducedMotion();
   const { isPurchased, isLessonVisited } = useCourseAccess();
-  const { isLessonCompleted } = useCourse(course.slug);
+  const { isLessonCompleted } = useCourse(course);
   const purchased = isPurchased(course.slug);
 
   const rows = course.modules.flatMap((module) =>
@@ -181,12 +182,12 @@ function LessonCard({
       }
       whileTap={reduceMotion ? undefined : { scale: 0.99 }}
     >
-      <Link
-        href={href}
+      <CardShell
+        href={purchased ? href : undefined}
         className={cn(
           "group flex h-full w-full flex-col rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         )}
-        aria-label={
+        ariaLabel={
           purchased ? `${actionLabel}: ${lesson.title}` : lesson.title
         }
       >
@@ -253,7 +254,33 @@ function LessonCard({
             </CardFooter>
           ) : null}
         </Card>
-      </Link>
+      </CardShell>
     </motion.div>
+  );
+}
+
+function CardShell({
+  href,
+  className,
+  ariaLabel,
+  children,
+}: {
+  href?: string;
+  className?: string;
+  ariaLabel: string;
+  children: ReactNode;
+}) {
+  if (href) {
+    return (
+      <Link href={href} className={className} aria-label={ariaLabel}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <div className={className} aria-label={ariaLabel}>
+      {children}
+    </div>
   );
 }

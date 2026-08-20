@@ -21,10 +21,10 @@ export async function generateMetadata({
   const { articleId } = await params;
   const article = getArticleById(articleId);
   if (!article) {
-    return { title: "Article | Digica Academy" };
+    return { title: "Article" };
   }
   return {
-    title: `${article.title} | Digica Academy`,
+    title: article.title,
     description: article.excerpt,
   };
 }
@@ -74,7 +74,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
             </div>
 
-            <h1 className="mt-6 text-balance text-2xl font-semibold tracking-tight text-primary-foreground md:text-3xl">
+            <h1 className="font-display mt-6 text-balance text-2xl font-semibold tracking-tight text-primary-foreground md:text-3xl">
               {article.title}
             </h1>
 
