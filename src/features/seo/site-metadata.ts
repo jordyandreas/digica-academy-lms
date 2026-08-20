@@ -46,9 +46,16 @@ export function buildRootMetadata(): Metadata {
     description: SITE_DEFAULT_DESCRIPTION,
     keywords: [...SITE_KEYWORDS],
     applicationName: SITE_NAME,
+    alternates: {
+      canonical: "/",
+    },
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+      },
     },
     icons: {
       icon: [{ url: "/favicon.ico", type: "image/x-icon" }],
@@ -57,6 +64,7 @@ export function buildRootMetadata(): Metadata {
     openGraph: {
       type: "website",
       locale: "en_US",
+      url: "/",
       siteName: SITE_NAME,
       title: SITE_DEFAULT_TITLE,
       description: SITE_DEFAULT_DESCRIPTION,
