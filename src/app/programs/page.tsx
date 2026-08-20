@@ -7,6 +7,8 @@ import { HeaderAuth } from "@/components/auth/HeaderAuth";
 import ProgramsSection from "@/components/landing/ProgramsSection";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Programs",
   description:

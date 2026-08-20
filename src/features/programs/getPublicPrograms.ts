@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { createProgramsReaderClient } from "@/lib/supabase/programs-reader";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { fetchProgramPublicContent } from "@/features/programs/programPublicContent";
@@ -302,6 +303,7 @@ export async function getPublicPrograms(): Promise<PublicProgramsResult> {
   }
 
   try {
+    await connection();
     const supabase = await createProgramsReaderClient();
     const today = todayIsoDate();
 
@@ -342,6 +344,7 @@ export async function getPublicProgramByIdentifier(
   if (!identifier || !isSupabaseConfigured()) return null;
 
   try {
+    await connection();
     const today = todayIsoDate();
     const row = await fetchProgramRowByIdentifier(identifier);
 
