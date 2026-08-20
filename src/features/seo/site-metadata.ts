@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 export const SITE_NAME = "Digica Academy";
 
-/** Public LMS origin (admin `NEXT_PUBLIC_PUBLIC_APP_URL` points here). */
-export const SITE_URL = "https://digica-academy.web.id";
+/** Public LMS origin (admin `NEXT_PUBLIC_PUBLIC_APP_URL` points here). Matches Vercel primary: www. */
+export const SITE_URL = "https://www.digica-academy.web.id";
 
 /** Homepage `<title>` (template is not applied to the default). */
 export const SITE_DEFAULT_TITLE =
