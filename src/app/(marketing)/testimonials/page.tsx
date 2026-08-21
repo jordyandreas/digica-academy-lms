@@ -3,7 +3,6 @@ import { TESTIMONIALS } from "@/features/testimonials/data/testimonials";
 import { TestimonialCardGrid } from "@/components/testimonials/TestimonialCard";
 import { Button } from "@/components/ui/button";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
-import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function TestimonialsIndexPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white via-primary/5 to-white">
+    <>
       <header className="glass-panel sticky top-0 z-10 border-b border-zinc-200/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Button asChild variant="ghost" size="sm" className="gap-2 text-primary">
@@ -43,8 +42,6 @@ export default function TestimonialsIndexPage() {
 
         <TestimonialCardGrid testimonials={TESTIMONIALS} />
       </main>
-
-      <SiteFooter />
-    </div>
+    </>
   );
 }

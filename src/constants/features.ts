@@ -5,5 +5,5 @@
  * Flip `PUBLIC_AUTH_ENABLED` to true once auth email delivery is production-ready.
  */
 export const COURSES_ENABLED = false;
-export const ARTICLES_ENABLED = false;
+export const ARTICLES_ENABLED = true;
 export const PUBLIC_AUTH_ENABLED = false;

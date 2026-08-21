@@ -5,7 +5,6 @@ import { getPublicPrograms } from "@/features/programs/getPublicPrograms";
 import { Button } from "@/components/ui/button";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
 import ProgramsSection from "@/components/landing/ProgramsSection";
-import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +18,7 @@ export default async function ProgramsPage() {
   const programsResult = await getPublicPrograms();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <>
       <header className="glass-panel border-b border-zinc-200/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Button asChild variant="ghost" size="sm" className="gap-2 text-primary">
@@ -32,12 +31,8 @@ export default async function ProgramsPage() {
         </div>
       </header>
       <main className="flex-1">
-        <ProgramsSection
-          result={programsResult}
-          headingAs="h1"
-        />
+        <ProgramsSection result={programsResult} headingAs="h1" />
       </main>
-      <SiteFooter />
-    </div>
+    </>
   );
 }

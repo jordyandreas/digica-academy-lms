@@ -39,6 +39,7 @@ export const FOOTER_COMPANY_LINKS: readonly FooterCompanyLink[] = [
   { label: "Curriculum", href: "/#curriculum" },
   { label: "Instructors", href: "/#instructor" },
   { label: "Alumni", href: "/#testimonials" },
+  { label: "Articles", href: "/articles" },
   { label: "FAQ", href: "/#faq" },
 ];
 
@@ -49,6 +50,7 @@ export const FOOTER_COMPANY_LINKS: readonly FooterCompanyLink[] = [
 export const FOOTER_COMPANY_LINKS_LOGGED_IN: readonly FooterCompanyLink[] = [
   { label: "Home", href: "/" },
   { label: "Programs", href: "/programs" },
+  { label: "Articles", href: "/articles" },
 ];
 
 export const FOOTER_COPYRIGHT = {

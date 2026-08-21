@@ -1,113 +1,71 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import type { Article } from "@/features/articles/data/articles";
+  getArticleCover,
+  type Article,
+} from "@/features/articles/data/articles";
 
 type ArticleCardProps = {
   article: Pick<
     Article,
-    | "id"
-    | "category"
-    | "title"
-    | "excerpt"
-    | "date"
-    | "readTime"
+    "id" | "category" | "title" | "excerpt" | "date" | "readTime"
   >;
 };
 
 export function ArticleCard({ article }: ArticleCardProps) {
+  const coverSrc = getArticleCover(article.category);
+
   return (
-    <Card className="group flex flex-col overflow-hidden border-zinc-200/90 bg-white/80 transition-all hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_18px_60px_rgba(22,24,29,0.16)]">
-      <div className="relative overflow-hidden">
-        <div className="h-40 bg-gradient-to-br from-primary/80 via-secondary to-tertiary/80">
-          <div className="flex h-full items-end justify-between px-5 pb-4">
-            <div className="space-y-1">
-              <span className="inline-flex items-center rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-semibold text-primary shadow-sm backdrop-blur">
-                {article.category}
-              </span>
-              <div className="flex items-center gap-1.5 text-[10px] text-primary-foreground/80">
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary-foreground/20 text-[9px] font-semibold text-primary-foreground">
-                  DA
-                </span>
-                <span>Digica Academy Journal</span>
-              </div>
-            </div>
-            <div className="relative flex -space-x-2">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-primary/20 bg-white/90 text-[10px] font-semibold text-primary shadow-sm">
-                JP
-              </span>
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-primary/20 bg-primary/90 text-[10px] font-semibold text-primary-foreground shadow-sm">
-                TK
-              </span>
-            </div>
+    <Link
+      href={`/articles/${article.id}`}
+      className="group block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+    >
+      <Card className="flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg">
+        <div className="relative aspect-[16/9] w-full overflow-hidden bg-primary/5">
+          <Image
+            src={coverSrc}
+            alt=""
+            fill
+            className="object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+        </div>
+
+        <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+            {article.category}
+          </span>
+
+          <h3 className="mt-2 line-clamp-2 min-h-[2.6em] font-display text-[0.95rem] font-semibold leading-snug tracking-tight text-zinc-900 transition-colors group-hover:text-primary">
+            {article.title}
+          </h3>
+
+          <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-zinc-600">
+            {article.excerpt}
+          </p>
+
+          <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-4 text-[12px] text-zinc-500">
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 shrink-0 text-primary/80" aria-hidden />
+              <span>{article.readTime}</span>
+            </span>
+            <span className="text-zinc-300" aria-hidden>
+              ·
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarDays
+                className="h-3.5 w-3.5 shrink-0 text-primary/80"
+                aria-hidden
+              />
+              <span>{article.date}</span>
+            </span>
           </div>
         </div>
-
-        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          <div className="h-full w-full bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        </div>
-      </div>
-
-      <CardHeader className="space-y-3 pb-4">
-        <CardTitle className="text-[15px] leading-snug text-zinc-900 group-hover:text-primary">
-          {article.title}
-        </CardTitle>
-        <CardDescription className="text-[13px] leading-relaxed text-zinc-600">
-          {article.excerpt}
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="mt-auto space-y-3 pt-0 text-[11px] text-zinc-500">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarDays className="h-3.5 w-3.5 text-primary/80" />
-            <span>{article.date}</span>
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5 text-emerald-600/80" />
-            <span>{article.readTime}</span>
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between text-[11px]">
-          <p className="text-zinc-600">
-            Curated from real student and mentor sessions inside Digica Academy.
-          </p>
-        </div>
-      </CardContent>
-
-      <CardFooter className="mt-2 flex items-center justify-between border-t border-zinc-100 bg-zinc-50/80 text-[11px] text-zinc-600">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
-            ↻
-          </span>
-          <span className="text-xs text-zinc-700">
-            Recommended reading before starting the{" "}
-            <span className="font-medium text-primary">Data Foundations</span> track.
-          </span>
-        </div>
-        <Button
-          asChild
-          size="sm"
-          variant="ghost"
-          className="ml-3 h-7 px-2 text-[11px] text-primary hover:bg-primary/10"
-        >
-          <Link href={`/articles/${article.id}`}>
-            Read article
-            <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+      </Card>
+    </Link>
   );
 }

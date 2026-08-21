@@ -17,7 +17,7 @@ import { GuestLandingMain } from "@/components/home/GuestLandingMain";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import type { PublicProgramsResult } from "@/features/programs/types";
 import type { Course } from "@/lib/types";
-import { COURSES_ENABLED } from "@/constants/features";
+import { ARTICLES_ENABLED, COURSES_ENABLED } from "@/constants/features";
 import { cn } from "@/lib/utils";
 
 function MobileNavLinks({ onNavigate }: { onNavigate: () => void }) {
@@ -46,6 +46,11 @@ function MobileNavLinks({ onNavigate }: { onNavigate: () => void }) {
       <HashLink href="#testimonials" className={linkClass} onClick={onNavigate}>
         Alumni
       </HashLink>
+      {ARTICLES_ENABLED ? (
+        <HashLink href="#articles" className={linkClass} onClick={onNavigate}>
+          Articles
+        </HashLink>
+      ) : null}
     </nav>
   );
 }
@@ -109,6 +114,11 @@ export function HomeClient({ programsResult, courses }: HomeClientProps) {
             <HashLink href="#testimonials" className="header-nav-link">
               Alumni
             </HashLink>
+            {ARTICLES_ENABLED ? (
+              <HashLink href="#articles" className="header-nav-link">
+                Articles
+              </HashLink>
+            ) : null}
           </nav>
 
           <div className="flex shrink-0 items-center sm:gap-3">

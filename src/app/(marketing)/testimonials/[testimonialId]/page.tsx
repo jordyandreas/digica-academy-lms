@@ -9,7 +9,6 @@ import {
 import { TestimonialStory } from "@/components/testimonials/TestimonialStory";
 import { Button } from "@/components/ui/button";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
-import { SiteFooter } from "@/components/layout/SiteFooter";
 
 interface TestimonialPageProps {
   params: Promise<{ testimonialId: string }>;
@@ -33,14 +32,16 @@ export async function generateMetadata({
   };
 }
 
-export default async function TestimonialDetailPage({ params }: TestimonialPageProps) {
+export default async function TestimonialDetailPage({
+  params,
+}: TestimonialPageProps) {
   const { testimonialId } = await params;
   const t = getTestimonialById(testimonialId);
 
   if (!t) notFound();
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white via-primary/5 to-white">
+    <>
       <header className="glass-panel sticky top-0 z-10 border-b border-zinc-200/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Button asChild variant="ghost" size="sm" className="gap-2 text-primary">
@@ -56,8 +57,6 @@ export default async function TestimonialDetailPage({ params }: TestimonialPageP
       <div className="flex-1">
         <TestimonialStory testimonial={t} />
       </div>
-
-      <SiteFooter />
-    </div>
+    </>
   );
 }
