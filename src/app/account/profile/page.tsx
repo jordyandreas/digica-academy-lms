@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getStudentProfile } from "@/features/profile/getStudentProfile";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { toPhoneInputValue } from "@/utils/phone";
+import { toE164PhoneForInput } from "@/utils/phone";
 
 export default async function AccountProfilePage() {
   if (!isSupabaseConfigured()) {
@@ -55,7 +55,7 @@ export default async function AccountProfilePage() {
           email={user.email ?? ""}
           defaultValues={{
             full_name: profile?.full_name?.trim() || metadataName,
-            phone: toPhoneInputValue(profile?.phone ?? ""),
+            phone: toE164PhoneForInput(profile?.phone ?? "") ?? "",
             occupation: profile?.occupation ?? "",
             organization: profile?.organization ?? "",
           }}

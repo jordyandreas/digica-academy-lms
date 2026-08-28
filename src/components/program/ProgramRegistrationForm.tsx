@@ -17,7 +17,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getStudentProfile } from "@/features/profile/getStudentProfile";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { toPhoneInputValue } from "@/utils/phone";
+import { toE164PhoneForInput } from "@/utils/phone";
 import { buildPaymentWhatsAppUrl } from "@/utils/admin-whatsapp";
 import {
   getPromoInitialSlots,
@@ -194,7 +194,7 @@ function ProgramRegistrationFormInner({
         form.setValue("name", profile.full_name, { shouldDirty: false });
       }
       if (profile.phone && !form.getValues("phone")) {
-        form.setValue("phone", toPhoneInputValue(profile.phone), {
+        form.setValue("phone", toE164PhoneForInput(profile.phone) ?? "", {
           shouldDirty: false,
         });
       }

@@ -13,7 +13,7 @@ import {
   paidParticipantRegistrationSchema,
   participantRegistrationSchema,
 } from "@/schemas/participant-registration-schema";
-import { normalizeParticipantPhoneForSubmit } from "@/utils/phone";
+import { normalizePhoneForSubmit } from "@/utils/phone";
 import { resolveProgramIdByIdentifier } from "@/utils/program-public-link";
 
 type RouteContext = {
@@ -137,7 +137,7 @@ export async function POST(request: Request, context: RouteContext) {
       const { error } = await supabase.from("participants").insert({
         name: values.name.trim().toLowerCase(),
         email: values.email.trim().toLowerCase(),
-        phone: normalizeParticipantPhoneForSubmit(values.phone),
+        phone: normalizePhoneForSubmit(values.phone),
         occupation: values.occupation || null,
         organization: values.organization?.trim().toLowerCase() || null,
         program_id: resolvedProgramId,
@@ -152,7 +152,7 @@ export async function POST(request: Request, context: RouteContext) {
             : null,
         friend_phone:
           selectedPackage === "bareng_teman" && values.friend_phone
-            ? normalizeParticipantPhoneForSubmit(values.friend_phone)
+            ? normalizePhoneForSubmit(values.friend_phone)
             : null,
       });
 
@@ -182,7 +182,7 @@ export async function POST(request: Request, context: RouteContext) {
     const { error } = await supabase.from("participants").insert({
       name: values.name.trim().toLowerCase(),
       email: values.email.trim().toLowerCase(),
-      phone: normalizeParticipantPhoneForSubmit(values.phone),
+      phone: normalizePhoneForSubmit(values.phone),
       occupation: values.occupation || null,
       organization: values.organization?.trim().toLowerCase() || null,
       program_id: resolvedProgramId,

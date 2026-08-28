@@ -1,26 +1,70 @@
-/**
- * Converts Indonesian numbers with +62 or 62 prefix to local 0… format for API payloads.
- */
-export function normalizeParticipantPhoneForSubmit(phone: string): string {
-  const normalized = phone.trim().replace(/[\s-]/g, "");
+import {
+  isValidPhoneNumber,
+  parsePhoneNumberFromString,
+  type CountryCode,
+} from "libphonenumber-js";
 
-  if (normalized.startsWith("+62")) {
-    return `0${normalized.slice(3)}`;
-  }
+export const DEFAULT_PHONE_COUNTRY = "ID" as const;
+export const MAX_PHONE_DIGITS = 15;
 
-  if (normalized.startsWith("62")) {
-    return `0${normalized.slice(2)}`;
-  }
-
-  return normalized;
+function stripSeparators(value: string): string {
+  return value.trim().replace(/[\s-]/g, "");
 }
 
-/** Converts stored 0… / 62… numbers back to E.164 for PhoneInput. */
-export function toPhoneInputValue(phone: string): string {
-  const normalized = phone.trim().replace(/[\s-]/g, "");
-  if (!normalized) return "";
-  if (normalized.startsWith("+")) return normalized;
-  if (normalized.startsWith("0")) return `+62${normalized.slice(1)}`;
-  if (normalized.startsWith("62")) return `+${normalized}`;
-  return normalized;
+export function countPhoneDigits(value: string): number {
+  return value.replace(/\D/g, "").length;
+}
+
+export function isWithinMaxPhoneDigits(value: string): boolean {
+  return countPhoneDigits(value) <= MAX_PHONE_DIGITS;
+}
+
+export function toE164Phone(
+  value: string,
+  defaultCountry: CountryCode = DEFAULT_PHONE_COUNTRY,
+): string | null {
+  const normalized = stripSeparators(value);
+  if (!normalized) return null;
+
+  const parsed = parsePhoneNumberFromString(normalized, defaultCountry);
+  if (!parsed || !parsed.isValid()) return null;
+
+  const e164 = parsed.format("E.164");
+  if (!isWithinMaxPhoneDigits(e164)) return null;
+
+  return e164;
+}
+
+/** Coerce legacy/local values to E.164 for react-phone-number-input. */
+export function toE164PhoneForInput(
+  value: string,
+  defaultCountry: CountryCode = DEFAULT_PHONE_COUNTRY,
+): string | undefined {
+  const normalized = stripSeparators(value);
+  if (!normalized) return undefined;
+
+  if (normalized.startsWith("+")) {
+    return isWithinMaxPhoneDigits(normalized) ? normalized : undefined;
+  }
+
+  return toE164Phone(normalized, defaultCountry) ?? undefined;
+}
+
+export function isValidParticipantPhone(
+  value: string,
+  defaultCountry: CountryCode = DEFAULT_PHONE_COUNTRY,
+): boolean {
+  const normalized = stripSeparators(value);
+  if (!normalized) return false;
+  if (!isWithinMaxPhoneDigits(normalized)) return false;
+  return isValidPhoneNumber(normalized, defaultCountry);
+}
+
+/** Normalize to E.164 for API/DB writes (call after schema validation). */
+export function normalizePhoneForSubmit(phone: string): string {
+  const e164 = toE164Phone(phone);
+  if (!e164) {
+    throw new Error("Phone number must be valid E.164 before submit");
+  }
+  return e164;
 }

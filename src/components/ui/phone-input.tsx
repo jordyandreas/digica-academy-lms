@@ -7,6 +7,11 @@ import PhoneInputWithCountry, {
 import flags from "react-phone-number-input/flags";
 import { PhoneCountrySelect } from "@/components/ui/phone-country-select";
 import { cn } from "@/lib/utils";
+import {
+  DEFAULT_PHONE_COUNTRY,
+  isWithinMaxPhoneDigits,
+  toE164PhoneForInput,
+} from "@/utils/phone";
 
 export type PhoneInputProps = Omit<
   React.ComponentProps<"input">,
@@ -24,7 +29,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       className,
       value = "",
       onChange,
-      defaultCountry = "ID",
+      defaultCountry = DEFAULT_PHONE_COUNTRY,
       invalid = false,
       placeholder = "812 3456 7890",
       id,
@@ -40,6 +45,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   ) => {
     const restWithoutRef = rest as typeof rest & { ref?: unknown };
     const { ref: _ignoredRef, ...inputRest } = restWithoutRef;
+    const e164Value = toE164PhoneForInput(value, defaultCountry);
 
     return (
       <div
@@ -62,8 +68,15 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           flags={flags}
           countrySelectComponent={PhoneCountrySelect}
           placeholder={placeholder}
-          value={value || undefined}
-          onChange={(next) => onChange?.(next ?? "")}
+          value={e164Value}
+          onChange={(next) => {
+            if (!next) {
+              onChange?.("");
+              return;
+            }
+            if (!isWithinMaxPhoneDigits(next)) return;
+            onChange?.(next);
+          }}
           onBlur={onBlur}
           disabled={disabled}
           inputRef={ref}

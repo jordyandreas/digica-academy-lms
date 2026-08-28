@@ -5,6 +5,10 @@ import {
   type RegistrationPackage,
   type RegistrationSource,
 } from "@/constants/registration-offers";
+import {
+  optionalParticipantPhoneSchema,
+  participantPhoneSchema,
+} from "@/schemas/phone-schema";
 
 export const registrationOccupationOptions = [
   { label: "mahasiswa", value: "mahasiswa" },
@@ -32,7 +36,7 @@ const baseParticipantRegistrationSchema = z.object({
     .trim()
     .min(1, "Email is required")
     .email("Email must be valid"),
-  phone: z.string().trim().min(1, "Phone number is required"),
+  phone: participantPhoneSchema(),
   occupation: z
     .string()
     .trim()
@@ -85,7 +89,11 @@ export function programRegistrationFormSchema(
       .trim()
       .min(1, "Email wajib diisi.")
       .email("Email tidak valid."),
-    phone: z.string().trim().min(1, "Nomor WhatsApp wajib diisi."),
+    phone: participantPhoneSchema({
+      required: "Nomor WhatsApp wajib diisi.",
+      invalid: "Masukkan nomor WhatsApp yang valid.",
+      maxDigits: "Nomor WhatsApp maksimal 15 digit.",
+    }),
     occupation: z
       .string()
       .trim()
@@ -100,7 +108,10 @@ export function programRegistrationFormSchema(
     organization: z.string().trim().min(1, "Institusi / organisasi wajib diisi."),
     selected_package: z.string(),
     friend_name: z.string(),
-    friend_phone: z.string(),
+    friend_phone: optionalParticipantPhoneSchema({
+      invalid: "Masukkan nomor WhatsApp teman yang valid.",
+      maxDigits: "Nomor WhatsApp teman maksimal 15 digit.",
+    }),
   });
 
   if (!paid) {
@@ -154,7 +165,7 @@ export const paidParticipantRegistrationSchema =
         .min(1, "Registration source is required"),
       selected_package: z.string().trim().min(1, "Package is required"),
       friend_name: z.string().trim().optional(),
-      friend_phone: z.string().trim().optional(),
+      friend_phone: optionalParticipantPhoneSchema().optional(),
     })
     .superRefine((data, ctx) => {
       if (!isRegistrationSource(data.registration_source)) {

@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { studentProfileSchema } from "@/features/profile/student-profile-schema";
 import type { StudentProfileInput } from "@/features/profile/types";
-import { normalizeParticipantPhoneForSubmit } from "@/utils/phone";
+import { normalizePhoneForSubmit } from "@/utils/phone";
 
 function emptyToNull(value: string): string | null {
   const trimmed = value.trim();
@@ -28,7 +28,7 @@ export async function updateStudentProfile(
   const phone = emptyToNull(values.phone);
   const profileFields = {
     full_name: values.full_name,
-    phone: phone ? normalizeParticipantPhoneForSubmit(phone) : null,
+    phone: phone ? normalizePhoneForSubmit(phone) : null,
     occupation: emptyToNull(values.occupation),
     organization: emptyToNull(values.organization),
   };
