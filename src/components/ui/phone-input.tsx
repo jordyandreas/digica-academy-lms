@@ -11,6 +11,7 @@ import {
   DEFAULT_PHONE_COUNTRY,
   isWithinMaxPhoneDigits,
   toE164PhoneForInput,
+  wouldExceedMaxNationalDigits,
 } from "@/utils/phone";
 
 export type PhoneInputProps = Omit<
@@ -19,6 +20,7 @@ export type PhoneInputProps = Omit<
 > & {
   value?: string;
   onChange?: (value: string) => void;
+  onMaxDigitsExceeded?: () => void;
   defaultCountry?: Country;
   invalid?: boolean;
 };
@@ -29,6 +31,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       className,
       value = "",
       onChange,
+      onMaxDigitsExceeded,
       defaultCountry = DEFAULT_PHONE_COUNTRY,
       invalid = false,
       placeholder = "812 3456 7890",
@@ -39,13 +42,88 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       autoComplete = "tel",
       inputMode = "tel",
       onBlur,
+      onKeyDown,
+      onPaste,
       ...rest
     },
     ref,
   ) => {
     const restWithoutRef = rest as typeof rest & { ref?: unknown };
     const { ref: _ignoredRef, ...inputRest } = restWithoutRef;
-    const e164Value = toE164PhoneForInput(value, defaultCountry);
+    const inputRestHandlers = inputRest as {
+      onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+      onPaste?: React.ClipboardEventHandler<HTMLInputElement>;
+    };
+    const {
+      onKeyDown: inputRestKeyDown,
+      onPaste: inputRestPaste,
+      ...remainingInputRest
+    } = inputRestHandlers;
+    const [country, setCountry] = React.useState<Country>(defaultCountry);
+    const [inputResetKey, setInputResetKey] = React.useState(0);
+    const e164Value = toE164PhoneForInput(value, country);
+
+    React.useEffect(() => {
+      setCountry(defaultCountry);
+    }, [defaultCountry]);
+
+    const rejectOverflow = React.useCallback(() => {
+      onMaxDigitsExceeded?.();
+    }, [onMaxDigitsExceeded]);
+
+    const resetInput = React.useCallback(() => {
+      setInputResetKey((current) => current + 1);
+    }, []);
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      inputRestKeyDown?.(event);
+      onKeyDown?.(event);
+      if (event.defaultPrevented) return;
+
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.key.length !== 1) return;
+
+      const input = event.currentTarget;
+      const selectionStart = input.selectionStart ?? input.value.length;
+      const selectionEnd = input.selectionEnd ?? input.value.length;
+
+      if (
+        wouldExceedMaxNationalDigits(
+          input.value,
+          event.key,
+          selectionStart,
+          selectionEnd,
+          country,
+        )
+      ) {
+        event.preventDefault();
+        rejectOverflow();
+      }
+    };
+
+    const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+      inputRestPaste?.(event);
+      onPaste?.(event);
+      if (event.defaultPrevented) return;
+
+      const pasted = event.clipboardData.getData("text");
+      const input = event.currentTarget;
+      const selectionStart = input.selectionStart ?? input.value.length;
+      const selectionEnd = input.selectionEnd ?? input.value.length;
+
+      if (
+        wouldExceedMaxNationalDigits(
+          input.value,
+          pasted,
+          selectionStart,
+          selectionEnd,
+          country,
+        )
+      ) {
+        event.preventDefault();
+        rejectOverflow();
+      }
+    };
 
     return (
       <div
@@ -57,6 +135,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
         )}
       >
         <PhoneInputWithCountry
+          key={inputResetKey}
           id={id}
           name={name}
           international={false}
@@ -69,12 +148,19 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           countrySelectComponent={PhoneCountrySelect}
           placeholder={placeholder}
           value={e164Value}
+          onCountryChange={(nextCountry) => {
+            if (nextCountry) setCountry(nextCountry);
+          }}
           onChange={(next) => {
             if (!next) {
               onChange?.("");
               return;
             }
-            if (!isWithinMaxPhoneDigits(next)) return;
+            if (!isWithinMaxPhoneDigits(next)) {
+              rejectOverflow();
+              resetInput();
+              return;
+            }
             onChange?.(next);
           }}
           onBlur={onBlur}
@@ -87,7 +173,9 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             "aria-invalid": invalid,
             className:
               "PhoneInputInput flex-1 min-w-0 border-0 bg-transparent px-3 py-1 text-sm shadow-none outline-none focus-visible:ring-0 placeholder:text-muted-foreground disabled:cursor-not-allowed",
-            ...inputRest,
+            ...remainingInputRest,
+            onKeyDown: handleKeyDown,
+            onPaste: handlePaste,
           }}
           className="flex w-full min-w-0 items-center"
         />

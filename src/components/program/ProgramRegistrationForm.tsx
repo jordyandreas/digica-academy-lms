@@ -406,6 +406,7 @@ function ProgramRegistrationFormInner({
             label="Nomor WhatsApp"
             required
             placeholder="812 3456 7890"
+            maxDigitsMessage="Nomor WhatsApp maksimal 15 digit."
             description="Pilih kode negara, lalu isi nomor tanpa +62 atau angka 0 di depan."
             componentProps={{
               input: { id: "reg-phone" },
@@ -522,6 +523,7 @@ function ProgramRegistrationFormInner({
                     label="WhatsApp Teman"
                     required
                     placeholder="812 3456 7890"
+                    maxDigitsMessage="Nomor WhatsApp teman maksimal 15 digit."
                     description="Pilih kode negara, lalu isi nomor tanpa +62 atau angka 0 di depan."
                     componentProps={{
                       input: { id: "reg-friend-phone" },

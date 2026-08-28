@@ -3,6 +3,7 @@ import {
   parsePhoneNumberFromString,
   type CountryCode,
 } from "libphonenumber-js";
+import { getCountryCallingCode } from "react-phone-number-input/input";
 
 export const DEFAULT_PHONE_COUNTRY = "ID" as const;
 export const MAX_PHONE_DIGITS = 15;
@@ -17,6 +18,34 @@ export function countPhoneDigits(value: string): number {
 
 export function isWithinMaxPhoneDigits(value: string): boolean {
   return countPhoneDigits(value) <= MAX_PHONE_DIGITS;
+}
+
+/** Max national digits allowed for a country (15 total minus calling code). */
+export function getMaxNationalDigits(
+  country: CountryCode = DEFAULT_PHONE_COUNTRY,
+): number {
+  const callingCode = getCountryCallingCode(country);
+  return MAX_PHONE_DIGITS - callingCode.length;
+}
+
+export function countNationalDigits(value: string): number {
+  return value.replace(/\D/g, "").length;
+}
+
+export function wouldExceedMaxNationalDigits(
+  currentValue: string,
+  insert: string,
+  selectionStart: number,
+  selectionEnd: number,
+  country: CountryCode = DEFAULT_PHONE_COUNTRY,
+): boolean {
+  const nextValue =
+    currentValue.slice(0, selectionStart) +
+    insert +
+    currentValue.slice(selectionEnd);
+  return (
+    countNationalDigits(nextValue) > getMaxNationalDigits(country)
+  );
 }
 
 export function toE164Phone(

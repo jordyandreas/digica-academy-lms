@@ -11,11 +11,15 @@ type ParticipantPhoneMessages = {
   maxDigits?: string;
 };
 
+export function phoneMaxDigitsMessage(maxDigits = MAX_PHONE_DIGITS) {
+  return `Phone number must be at most ${maxDigits} digits`;
+}
+
 export function participantPhoneSchema(messages: ParticipantPhoneMessages = {}) {
   const {
     required = "Phone number is required",
     invalid = "Enter a valid WhatsApp number",
-    maxDigits = `Phone number must be at most ${MAX_PHONE_DIGITS} digits`,
+    maxDigits = phoneMaxDigitsMessage(),
   } = messages;
 
   return z.string().trim().superRefine((value, ctx) => {
@@ -38,7 +42,7 @@ export function optionalParticipantPhoneSchema(
 ) {
   const {
     invalid = "Enter a valid WhatsApp number",
-    maxDigits = `Phone number must be at most ${MAX_PHONE_DIGITS} digits`,
+    maxDigits = phoneMaxDigitsMessage(),
   } = messages;
 
   return z.string().trim().superRefine((value, ctx) => {

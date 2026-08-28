@@ -15,6 +15,7 @@ import type { Country } from "react-phone-number-input";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { phoneMaxDigitsMessage } from "@/schemas/phone-schema";
 import { DEFAULT_PHONE_COUNTRY } from "@/utils/phone";
 
 export type PhoneInputControllerProps<Schema extends FieldValues> = {
@@ -25,10 +26,14 @@ export type PhoneInputControllerProps<Schema extends FieldValues> = {
   required?: boolean;
   placeholder?: string;
   defaultCountry?: Country;
+  maxDigitsMessage?: string;
   componentProps?: {
     wrapper?: ComponentProps<"div">;
     input?: ComponentProps<"input">;
-    phone?: Omit<ComponentProps<typeof PhoneInput>, "value" | "onChange">;
+    phone?: Omit<
+      ComponentProps<typeof PhoneInput>,
+      "value" | "onChange" | "onMaxDigitsExceeded"
+    >;
   };
 };
 
@@ -41,6 +46,7 @@ export function PhoneInputController<Schema extends FieldValues>({
   required,
   placeholder = "812 3456 7890",
   defaultCountry = DEFAULT_PHONE_COUNTRY,
+  maxDigitsMessage = phoneMaxDigitsMessage(),
   componentProps,
 }: PropsWithChildren<PhoneInputControllerProps<Schema>>) {
   const { wrapper, input, phone } = componentProps ?? {};
@@ -86,7 +92,18 @@ export function PhoneInputController<Schema extends FieldValues>({
               id={inputId}
               name={field.name}
               value={field.value ?? ""}
-              onChange={field.onChange}
+              onChange={(value) => {
+                field.onChange(value);
+                if (form.getFieldState(name).error?.type === "maxDigits") {
+                  form.clearErrors(name);
+                }
+              }}
+              onMaxDigitsExceeded={() => {
+                form.setError(name, {
+                  type: "maxDigits",
+                  message: maxDigitsMessage,
+                });
+              }}
               onBlur={field.onBlur}
               placeholder={resolvedPlaceholder}
               invalid={Boolean(fieldError)}
