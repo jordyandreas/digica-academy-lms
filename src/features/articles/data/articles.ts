@@ -33,6 +33,54 @@ export function getArticleCover(category: ArticleCategory): string {
 
 export const ARTICLES: Article[] = [
   {
+    id: "write-the-metric-definition-before-the-dashboard",
+    category: "Analytics",
+    title: "Write the Metric Definition Before You Build the Dashboard",
+    excerpt:
+      "Teams argue about “revenue” because nobody agreed on grain, filters, and ownership first. Definition first — charts second.",
+    date: "August 26, 2026",
+    readTime: "5 min read",
+    bodyParagraphs: [
+      "Dashboards get built fast when someone asks for “a revenue view.” Then finance, product, and growth each mean something different — gross vs net, booked vs paid, with or without refunds — and the meeting dissolves into who owns the number.",
+      "A metric definition is a short contract: name, business question, grain (order? customer? day?), inclusions and exclusions, time zone, and who can change it. Write that before you open a charting tool. The doc is boring on purpose; it prevents expensive surprise later.",
+      "Digica’s Mini Bootcamp Data Analytics treats this as part of the loop: clarify the question, lock the definition, then clean and visualize. Mentors push on “what exactly are we counting?” until your slide would survive a product standup.",
+      "Portfolio tip: include a one-paragraph metric spec next to your chart. Hiring managers notice when you can defend the number, not only decorate it.",
+      "Pretty visuals without shared definitions create false confidence. Analysts who start with the contract earn trust when the dashboard number moves.",
+    ],
+  },
+  {
+    id: "pick-the-metric-that-matches-the-cost-of-being-wrong",
+    category: "Data Science",
+    title: "Pick the Metric That Matches the Cost of Being Wrong",
+    excerpt:
+      "Accuracy looks great in a notebook. Interviews and production ask whether you optimized for the mistake that actually hurts.",
+    date: "August 19, 2026",
+    readTime: "6 min read",
+    bodyParagraphs: [
+      "Defaulting to accuracy is easy — and often wrong. On imbalanced labels, a model that always predicts the majority class looks “good” while missing every rare event that matters. The real question is which error costs more: a false positive or a false negative.",
+      "Map the business cost before you tune. Fraud, churn, and medical triage rarely share the same tradeoff. Precision, recall, F1, or a simple cost-weighted score should follow that map — not a leaderboard habit.",
+      "Digica’s Data Science Bootcamp asks for that defense in capstones: which metric, why, and what happens when the model is wrong. Mentors treat metric choice as a product decision, not a library default.",
+      "In interviews, lead with the cost story, then the number. “We optimized recall because missing a churner was expensive” beats “we got 94% accuracy” every time.",
+      "A slightly weaker model on the right metric beats a perfect score on the wrong one. Clarity about tradeoffs is part of the deliverable.",
+    ],
+  },
+  {
+    id: "when-your-resume-still-says-something-else",
+    category: "Career",
+    title: "When Your Resume Still Says Something Else",
+    excerpt:
+      "Career switchers do not need a fake title — they need a consistent story: transferable judgment, sharp projects, and a clear target role.",
+    date: "August 15, 2026",
+    readTime: "5 min read",
+    bodyParagraphs: [
+      "Your last job title may still say ops, sales, or finance while your nights are full of SQL and notebooks. Hiding that gap looks evasive. Owning the transition — with proof — looks intentional.",
+      "Lead with outcomes that transfer: decisions you informed, messy data you cleaned, stakeholders you briefed. Put one or two portfolio projects above the fold so the target role is obvious before someone scrolls to employment history.",
+      "Digica live bootcamps exist partly for this narrative: mentor feedback, cohort deadlines, and deliverables you can defend out loud. That is easier to explain than “I watched tutorials alone.”",
+      "Align LinkedIn, CV, and interview stories to one role title (analyst vs scientist). Mixed signals make recruiters guess — and guessing rarely favors the switcher.",
+      "You do not need to invent experience. You need a coherent path from where you were to the work you can already show.",
+    ],
+  },
+  {
     id: "sql-window-functions-that-interviewers-love",
     category: "SQL",
     title: "Window Functions That Actually Show Up in Interviews",
