@@ -13,15 +13,18 @@ import FinalCTA from "@/components/landing/FinalCTA";
 import { Reveal } from "@/components/motion/Reveal";
 import type { PublicProgramsResult } from "@/features/programs/types";
 import type { Course } from "@/lib/types";
+import type { ArticleCardModel } from "@/features/articles/data/articles";
 
 type GuestLandingMainProps = {
   programsResult: PublicProgramsResult;
   courses: Course[];
+  articles: ArticleCardModel[];
 };
 
 export function GuestLandingMain({
   programsResult,
   courses,
+  articles,
 }: GuestLandingMainProps) {
   return (
     <>
@@ -57,7 +60,7 @@ export function GuestLandingMain({
       </Reveal>
       {ARTICLES_ENABLED ? (
         <Reveal>
-          <ArticlesSection />
+          <ArticlesSection articles={articles} />
         </Reveal>
       ) : null}
       <Reveal>

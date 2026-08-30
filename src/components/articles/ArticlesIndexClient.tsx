@@ -4,20 +4,24 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  ARTICLES,
   ARTICLE_CATEGORY_FILTERS,
+  type ArticleCardModel,
 } from "@/features/articles/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 
-export function ArticlesIndexClient() {
+type ArticlesIndexClientProps = {
+  articles: ArticleCardModel[];
+};
+
+export function ArticlesIndexClient({ articles }: ArticlesIndexClientProps) {
   const [activeCategory, setActiveCategory] = useState<
     (typeof ARTICLE_CATEGORY_FILTERS)[number]
   >("All");
 
   const filteredArticles = useMemo(() => {
-    if (activeCategory === "All") return ARTICLES;
-    return ARTICLES.filter((article) => article.category === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === "All") return articles;
+    return articles.filter((article) => article.category === activeCategory);
+  }, [activeCategory, articles]);
 
   return (
     <div className="space-y-8">
@@ -44,7 +48,7 @@ export function ArticlesIndexClient() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredArticles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.slug} article={article} />
           ))}
         </div>
       )}

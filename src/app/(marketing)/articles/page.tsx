@@ -2,6 +2,7 @@ import Link from "next/link";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
 import { ArticlesIndexClient } from "@/components/articles/ArticlesIndexClient";
 import { Button } from "@/components/ui/button";
+import { getPublishedArticles } from "@/features/articles/getPublishedArticles";
 import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
     "Practical articles for data learners from Digica Academy — SQL, analytics, data science, and career frameworks.",
 };
 
-export default function ArticlesIndexPage() {
+export default async function ArticlesIndexPage() {
+  const articles = await getPublishedArticles();
+
   return (
     <>
       <header className="glass-panel sticky top-0 z-10 border-b border-zinc-200/80">
@@ -40,7 +43,7 @@ export default function ArticlesIndexPage() {
           </p>
         </div>
 
-        <ArticlesIndexClient />
+        <ArticlesIndexClient articles={articles} />
       </main>
     </>
   );
