@@ -1,17 +1,18 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CalendarDays, ChevronLeft, Clock } from "lucide-react";
 import {
-  getArticleById,
-  getAllArticleIds,
   getArticleCover,
   getProgramHintForCategory,
 } from "@/features/articles/data/articles";
-import { ArticleBody } from "@/components/articles/ArticleBody";
+import { getPublishedArticleBySlug } from "@/features/articles/getPublishedArticles";
+import { ArticleBodyHtml } from "@/components/articles/ArticleBodyHtml";
 import { Button } from "@/components/ui/button";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
+
+export const revalidate = 60;
 
 const DIGICA_INITIAL_ICON = "/logo/logo-digica-initial.webp";
 
@@ -19,15 +20,11 @@ interface ArticlePageProps {
   params: Promise<{ articleId: string }>;
 }
 
-export function generateStaticParams() {
-  return getAllArticleIds().map((articleId) => ({ articleId }));
-}
-
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { articleId } = await params;
-  const article = getArticleById(articleId);
+  const article = await getPublishedArticleBySlug(articleId);
   if (!article) {
     return { title: "Article" };
   }
@@ -39,7 +36,7 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { articleId } = await params;
-  const article = getArticleById(articleId);
+  const article = await getPublishedArticleBySlug(articleId);
 
   if (!article) notFound();
 
@@ -93,11 +90,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-white/85">
                 <span className="inline-flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5" aria-hidden />
-                  {article.readTime}
+                  {article.readTimeLabel}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <CalendarDays className="h-3.5 w-3.5" aria-hidden />
-                  {article.date}
+                  {article.displayDate}
                 </span>
               </div>
             </div>
@@ -109,7 +106,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </header>
 
         <div className="mt-10">
-          <ArticleBody paragraphs={article.bodyParagraphs} />
+          <ArticleBodyHtml html={article.bodyHtml} />
         </div>
 
         <footer className="mt-12 space-y-6 border-t border-zinc-200 pt-8">

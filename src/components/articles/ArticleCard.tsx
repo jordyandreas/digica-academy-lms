@@ -1,19 +1,14 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
   getArticleCover,
-  type Article,
+  type ArticleCardModel,
 } from "@/features/articles/data/articles";
 
 type ArticleCardProps = {
-  article: Pick<
-    Article,
-    "id" | "category" | "title" | "excerpt" | "date" | "readTime"
-  >;
+  article: ArticleCardModel;
 };
 
 export function ArticleCard({ article }: ArticleCardProps) {
@@ -21,7 +16,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   return (
     <Link
-      href={`/articles/${article.id}`}
+      href={`/articles/${article.slug}`}
       className="group block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
     >
       <Card className="flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg">
@@ -51,7 +46,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
           <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-4 text-[12px] text-zinc-500">
             <span className="inline-flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 shrink-0 text-primary/80" aria-hidden />
-              <span>{article.readTime}</span>
+              <span>{article.readTimeLabel}</span>
             </span>
             <span className="text-zinc-300" aria-hidden>
               ·
@@ -61,7 +56,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 className="h-3.5 w-3.5 shrink-0 text-primary/80"
                 aria-hidden
               />
-              <span>{article.date}</span>
+              <span>{article.displayDate}</span>
             </span>
           </div>
         </div>

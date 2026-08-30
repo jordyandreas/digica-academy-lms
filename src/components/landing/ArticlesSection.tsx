@@ -1,14 +1,16 @@
-"use client";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getLatestArticles } from "@/features/articles/data/articles";
+import type { ArticleCardModel } from "@/features/articles/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 
-const HOME_ARTICLES_LIMIT = 3;
+type ArticlesSectionProps = {
+  articles: ArticleCardModel[];
+};
 
-export default function ArticlesSection() {
-  const articles = getLatestArticles(HOME_ARTICLES_LIMIT);
+export default function ArticlesSection({ articles }: ArticlesSectionProps) {
+  if (articles.length === 0) {
+    return null;
+  }
 
   return (
     <section
@@ -31,7 +33,7 @@ export default function ArticlesSection() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.slug} article={article} />
           ))}
         </div>
 

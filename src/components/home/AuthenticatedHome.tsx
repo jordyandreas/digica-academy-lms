@@ -19,6 +19,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import ProgramsSection from "@/components/landing/ProgramsSection";
 import type { PublicProgramsResult } from "@/features/programs/types";
 import type { Course } from "@/lib/types";
+import type { ArticleCardModel } from "@/features/articles/data/articles";
 import { ARTICLES_ENABLED, COURSES_ENABLED } from "@/constants/features";
 
 type ResumeInfo = {
@@ -30,11 +31,13 @@ type ResumeInfo = {
 type AuthenticatedHomeProps = {
   programsResult: PublicProgramsResult;
   courses: Course[];
+  articles: ArticleCardModel[];
 };
 
 export function AuthenticatedHome({
   programsResult,
   courses,
+  articles,
 }: AuthenticatedHomeProps) {
   const { displayName: authDisplayName } = useAuth();
   const { purchasedCourseSlugs, visitedLessonIds } = useCourseAccess();
@@ -217,7 +220,7 @@ export function AuthenticatedHome({
 
       {ARTICLES_ENABLED ? (
         <Reveal>
-          <ArticlesSection />
+          <ArticlesSection articles={articles} />
         </Reveal>
       ) : null}
     </>

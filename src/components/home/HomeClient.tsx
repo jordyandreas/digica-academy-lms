@@ -17,6 +17,7 @@ import { GuestLandingMain } from "@/components/home/GuestLandingMain";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import type { PublicProgramsResult } from "@/features/programs/types";
 import type { Course } from "@/lib/types";
+import type { ArticleCardModel } from "@/features/articles/data/articles";
 import { ARTICLES_ENABLED, COURSES_ENABLED } from "@/constants/features";
 import { cn } from "@/lib/utils";
 
@@ -58,9 +59,10 @@ function MobileNavLinks({ onNavigate }: { onNavigate: () => void }) {
 type HomeClientProps = {
   programsResult: PublicProgramsResult;
   courses: Course[];
+  articles: ArticleCardModel[];
 };
 
-export function HomeClient({ programsResult, courses }: HomeClientProps) {
+export function HomeClient({ programsResult, courses, articles }: HomeClientProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
@@ -159,6 +161,7 @@ export function HomeClient({ programsResult, courses }: HomeClientProps) {
         <GuestLandingMain
           programsResult={programsResult}
           courses={courses}
+          articles={articles}
         />
       </main>
 
