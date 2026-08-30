@@ -2,8 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Article, ArticleCategory } from "@/features/articles/data/articles";
 
-const ARTICLE_SELECT =
-  "slug, category, title, excerpt, body_html, published_at, display_date, read_time_minutes, read_time_display";
+const ARTICLE_CARD_SELECT =
+  "slug, category, title, excerpt, published_at, display_date, read_time_minutes, read_time_display";
+
+const ARTICLE_DETAIL_SELECT = `${ARTICLE_CARD_SELECT}, body_html`;
 
 const VALID_CATEGORIES = new Set<string>([
   "SQL",
@@ -12,16 +14,19 @@ const VALID_CATEGORIES = new Set<string>([
   "Career",
 ]);
 
-type LmsArticleRow = {
+type LmsArticleCardRow = {
   slug: string;
   category: string;
   title: string;
   excerpt: string;
-  body_html: string | null;
   published_at: string | null;
   display_date: string | null;
   read_time_minutes: number | null;
   read_time_display: string | null;
+};
+
+type LmsArticleDetailRow = LmsArticleCardRow & {
+  body_html: string | null;
 };
 
 function formatPublishedDate(publishedAt: string): string {
@@ -33,7 +38,9 @@ function formatPublishedDate(publishedAt: string): string {
   }).format(new Date(publishedAt));
 }
 
-function mapRowToArticle(row: LmsArticleRow): Article | null {
+function mapRowToArticleCard(
+  row: LmsArticleCardRow
+): Omit<Article, "bodyHtml"> | null {
   if (!VALID_CATEGORIES.has(row.category)) {
     console.warn(
       `[lms] Skipping article "${row.slug}": unknown category "${row.category}".`
@@ -58,11 +65,18 @@ function mapRowToArticle(row: LmsArticleRow): Article | null {
     excerpt: row.excerpt,
     displayDate,
     readTimeLabel,
-    bodyHtml: row.body_html ?? "",
   };
 }
 
-async function fetchPublishedRows(limit?: number): Promise<LmsArticleRow[]> {
+function mapRowToArticle(row: LmsArticleDetailRow): Article | null {
+  const card = mapRowToArticleCard(row);
+  if (!card) return null;
+  return { ...card, bodyHtml: row.body_html ?? "" };
+}
+
+async function fetchPublishedCardRows(
+  limit?: number
+): Promise<LmsArticleCardRow[]> {
   if (!isSupabaseConfigured()) {
     console.warn("[lms] Supabase not configured; articles unavailable.");
     return [];
@@ -72,7 +86,7 @@ async function fetchPublishedRows(limit?: number): Promise<LmsArticleRow[]> {
     const supabase = await createClient();
     let query = supabase
       .from("lms_articles")
-      .select(ARTICLE_SELECT)
+      .select(ARTICLE_CARD_SELECT)
       .eq("status", "published")
       .order("published_at", { ascending: false, nullsFirst: false });
 
@@ -87,7 +101,7 @@ async function fetchPublishedRows(limit?: number): Promise<LmsArticleRow[]> {
       return [];
     }
 
-    return (data ?? []) as LmsArticleRow[];
+    return (data ?? []) as LmsArticleCardRow[];
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.warn("[lms] Could not load articles:", message);
@@ -95,11 +109,19 @@ async function fetchPublishedRows(limit?: number): Promise<LmsArticleRow[]> {
   }
 }
 
-export async function getPublishedArticles(): Promise<Article[]> {
-  const rows = await fetchPublishedRows();
+export async function getPublishedArticleCards(): Promise<
+  Omit<Article, "bodyHtml">[]
+> {
+  const rows = await fetchPublishedCardRows();
   return rows
-    .map(mapRowToArticle)
-    .filter((article): article is Article => article != null);
+    .map(mapRowToArticleCard)
+    .filter((article): article is Omit<Article, "bodyHtml"> => article != null);
+}
+
+/** @deprecated Prefer getPublishedArticleCards for list views. */
+export async function getPublishedArticles(): Promise<Article[]> {
+  const cards = await getPublishedArticleCards();
+  return cards.map((card) => ({ ...card, bodyHtml: "" }));
 }
 
 export async function getPublishedArticleBySlug(
@@ -113,7 +135,7 @@ export async function getPublishedArticleBySlug(
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("lms_articles")
-      .select(ARTICLE_SELECT)
+      .select(ARTICLE_DETAIL_SELECT)
       .eq("status", "published")
       .eq("slug", slug.trim())
       .maybeSingle();
@@ -127,7 +149,7 @@ export async function getPublishedArticleBySlug(
       return null;
     }
 
-    return mapRowToArticle(data as LmsArticleRow);
+    return mapRowToArticle(data as LmsArticleDetailRow);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.warn("[lms] Could not load article:", message);
@@ -140,8 +162,11 @@ export async function getLatestPublishedArticles(n: number): Promise<Article[]> 
     return [];
   }
 
-  const rows = await fetchPublishedRows(n);
+  const rows = await fetchPublishedCardRows(n);
   return rows
-    .map(mapRowToArticle)
+    .map((row) => {
+      const card = mapRowToArticleCard(row);
+      return card ? { ...card, bodyHtml: "" } : null;
+    })
     .filter((article): article is Article => article != null);
 }

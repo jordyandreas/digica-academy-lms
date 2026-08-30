@@ -2,7 +2,7 @@ import Link from "next/link";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
 import { ArticlesIndexClient } from "@/components/articles/ArticlesIndexClient";
 import { Button } from "@/components/ui/button";
-import { getPublishedArticles } from "@/features/articles/getPublishedArticles";
+import { getPublishedArticleCards } from "@/features/articles/getPublishedArticles";
 import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlesIndexPage() {
-  const articles = await getPublishedArticles();
+  const articles = await getPublishedArticleCards();
 
   return (
     <>

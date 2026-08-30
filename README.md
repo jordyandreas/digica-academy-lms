@@ -21,7 +21,7 @@ Path alias: `@/*` → `./src/*` (see `tsconfig.json`).
 
 ## Prerequisites
 
-- **Node.js** (LTS recommended)
+- **Node.js** 22 or later (see `.nvmrc`)
 - **pnpm** — pinned via `packageManager` in `package.json`
 - A **Supabase** project with LMS + programs schema applied (see [`supabase/README.md`](supabase/README.md))
 

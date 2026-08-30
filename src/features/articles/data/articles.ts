@@ -23,6 +23,8 @@ export const ARTICLE_CATEGORY_FILTERS = [
   "Career",
 ] as const;
 
+export const ARTICLES_INDEX_PAGE_SIZE = 10;
+
 /** Shared cover art per category (card + detail banner). */
 export const ARTICLE_COVER_BY_CATEGORY: Record<ArticleCategory, string> = {
   SQL: "/images/articles/sql-cover.png",
