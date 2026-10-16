@@ -45,3 +45,14 @@ export function getPublicCheckInSessions(
     (session) => normalizeSessionDate(session.session_date) === today,
   );
 }
+
+/** Sessions a participant may report as already watched (on or before today, Asia/Jakarta). */
+export function getPublicRecordingSessions(
+  sessions: CheckInSessionInput[],
+  today: string = getJakartaTodayDateString(),
+): CheckInSessionInput[] {
+  return sessions.filter((session) => {
+    const date = normalizeSessionDate(session.session_date);
+    return date !== null && date <= today;
+  });
+}

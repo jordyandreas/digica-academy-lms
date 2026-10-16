@@ -1,81 +1,153 @@
+import { cn } from "@/lib/utils";
+
 function SkeletonBlock({ className }: { className?: string }) {
   return (
     <div
-      className={`animate-pulse rounded-md bg-muted ${className ?? ""}`}
+      className={cn("animate-pulse rounded-md bg-muted", className)}
       aria-hidden
     />
   );
 }
 
-function FormFieldSkeleton({ showDescription = false }: { showDescription?: boolean }) {
+function FieldSkeleton({
+  labelClassName,
+  placeholderClassName = "w-24",
+  showDescription = false,
+  descriptionClassName = "w-56",
+  withChevron = false,
+}: {
+  labelClassName: string;
+  placeholderClassName?: string;
+  showDescription?: boolean;
+  descriptionClassName?: string;
+  withChevron?: boolean;
+}) {
   return (
     <div className="w-full">
-      <SkeletonBlock className="h-4 w-20 rounded bg-brand-pale/80" />
-      <SkeletonBlock className="mt-2 h-10 w-full rounded-md bg-background/80 ring-1 ring-border/60" />
+      <SkeletonBlock className={cn("h-3.5", labelClassName)} />
+      <div className="mt-2 flex h-9 items-center rounded-md border border-input bg-background/80 px-3 shadow-sm">
+        <SkeletonBlock className={cn("h-3 bg-muted/80", placeholderClassName)} />
+        {withChevron ? (
+          <SkeletonBlock className="ml-auto h-4 w-4 shrink-0 rounded-sm bg-muted/70" />
+        ) : null}
+      </div>
       {showDescription ? (
-        <SkeletonBlock className="mt-2 h-3 w-52 rounded bg-muted/70" />
+        <SkeletonBlock className={cn("mt-2 h-3", descriptionClassName)} />
       ) : null}
     </div>
   );
 }
 
-function RadioCardSkeleton() {
+function ChoiceCardSkeleton({ labelClassName }: { labelClassName: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-lg border border-brand-periwinkle/40 bg-background/60 p-3">
-      <SkeletonBlock className="mt-0.5 h-4 w-4 shrink-0 rounded-full" />
-      <div className="min-w-0 flex-1 space-y-1.5">
-        <SkeletonBlock className="h-3.5 w-24 rounded" />
-        <SkeletonBlock className="h-3 w-full rounded bg-muted/70" />
-      </div>
+    <div className="rounded-xl border border-border bg-background px-4 py-3">
+      <SkeletonBlock className={cn("h-4", labelClassName)} />
     </div>
   );
 }
 
-/** Mirrors the loaded check-in layout: header, step boxes, fields, and submit CTA. */
-export function CheckInPageSkeleton({ isWorkshop = true }: { isWorkshop?: boolean }) {
+const stepCardClassName =
+  "space-y-3 rounded-xl border border-brand-periwinkle/35 bg-brand-pale/10 p-4 shadow-[0_8px_24px_rgba(98,10,121,0.05)]";
+
+/**
+ * Default mirrors the shared attendance form (title, helper, two selects, submit).
+ * Workshop step cards are only used once the program type is known.
+ */
+export function CheckInPageSkeleton({ isWorkshop = false }: { isWorkshop?: boolean }) {
   return (
     <div className="flex flex-col gap-4" aria-busy="true" aria-live="polite">
       <p className="sr-only">Memuat halaman absensi…</p>
 
       <div className="space-y-1 text-center">
-        <SkeletonBlock className="mx-auto h-7 w-4/5 max-w-xs rounded bg-brand-pale/60" />
+        <SkeletonBlock className="mx-auto h-7 w-full bg-brand-pale/60" />
+        <SkeletonBlock className="mx-auto h-7 w-4/5 bg-brand-pale/60" />
         {!isWorkshop ? (
-          <SkeletonBlock className="mx-auto h-4 w-full max-w-[17rem] rounded bg-muted" />
+          <SkeletonBlock className="mx-auto h-4 w-full max-w-[17rem]" />
         ) : null}
       </div>
 
       <div className="space-y-5">
         {isWorkshop ? (
-          <div className="space-y-3 rounded-xl border border-brand-periwinkle/50 bg-brand-pale/15 p-4">
+          <div className={stepCardClassName}>
             <div className="space-y-1">
-              <SkeletonBlock className="h-4 w-28 rounded bg-brand-pale/80" />
-              <SkeletonBlock className="h-3 w-full max-w-[15rem] rounded bg-muted/70" />
+              <SkeletonBlock className="h-4 w-32 bg-brand-pale/80" />
+              <SkeletonBlock className="h-3 w-full max-w-[18rem] bg-muted/70" />
             </div>
-            <FormFieldSkeleton />
-            <FormFieldSkeleton showDescription />
+            <FieldSkeleton
+              labelClassName="w-20"
+              placeholderClassName="w-24"
+              withChevron
+            />
+            <FieldSkeleton
+              labelClassName="w-10"
+              placeholderClassName="w-28"
+              showDescription
+              descriptionClassName="w-56"
+              withChevron
+            />
           </div>
         ) : (
           <>
-            <FormFieldSkeleton />
-            <FormFieldSkeleton showDescription />
+            <FieldSkeleton
+              labelClassName="w-20"
+              placeholderClassName="w-24"
+              withChevron
+            />
+            <FieldSkeleton
+              labelClassName="w-10"
+              placeholderClassName="w-28"
+              showDescription
+              descriptionClassName="w-56"
+              withChevron
+            />
           </>
         )}
 
         {isWorkshop ? (
-          <div className="space-y-3 rounded-xl border border-brand-periwinkle/60 bg-brand-pale/25 p-4">
+          <div className={stepCardClassName}>
             <div className="space-y-1">
-              <SkeletonBlock className="h-4 w-56 rounded bg-brand-pale/80" />
-              <SkeletonBlock className="h-3 w-full rounded bg-muted/70" />
-              <SkeletonBlock className="h-3 w-4/5 rounded bg-muted/70" />
+              <SkeletonBlock className="h-4 w-full max-w-[16.5rem] bg-brand-pale/80" />
+              <SkeletonBlock className="h-3.5 w-full bg-muted/70" />
+              <SkeletonBlock className="h-3.5 w-4/5 bg-muted/70" />
             </div>
 
             <div className="space-y-2">
-              <RadioCardSkeleton />
-              <RadioCardSkeleton />
-              <RadioCardSkeleton />
+              <ChoiceCardSkeleton labelClassName="w-[92%]" />
+              <ChoiceCardSkeleton labelClassName="w-44" />
+              <ChoiceCardSkeleton labelClassName="w-48" />
             </div>
           </div>
         ) : null}
+
+        <SkeletonBlock className="h-10 w-full bg-brand-royal/15" />
+      </div>
+    </div>
+  );
+}
+
+/** Mirrors the recording form before a name is chosen: title, name select, session label + helper, submit. */
+export function RecordingCheckInPageSkeleton() {
+  return (
+    <div className="flex flex-col gap-4" aria-busy="true" aria-live="polite">
+      <p className="sr-only">Memuat halaman laporan recording…</p>
+
+      <div className="space-y-1 text-center">
+        <SkeletonBlock className="mx-auto h-7 w-full max-w-xs bg-brand-pale/60" />
+        <SkeletonBlock className="mx-auto h-4 w-full max-w-[20rem]" />
+        <SkeletonBlock className="mx-auto h-4 w-4/5 max-w-[17rem]" />
+      </div>
+
+      <div className="space-y-5">
+        <FieldSkeleton
+          labelClassName="w-20"
+          placeholderClassName="w-24"
+          withChevron
+        />
+
+        <div className="w-full">
+          <SkeletonBlock className="h-3.5 w-44" />
+          <SkeletonBlock className="mt-1 h-3 w-56" />
+        </div>
 
         <SkeletonBlock className="h-10 w-full rounded-md bg-brand-royal/15" />
       </div>

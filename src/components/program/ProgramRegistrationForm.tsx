@@ -587,20 +587,146 @@ function ProgramRegistrationFormInner({
   );
 }
 
-function RegistrationFormFallback() {
+function RegistrationSkeletonBlock({ className }: { className?: string }) {
   return (
-    <div className="space-y-4 py-2" aria-hidden>
-      <div className="h-6 w-40 animate-pulse rounded bg-muted" />
-      <div className="h-10 animate-pulse rounded-lg bg-muted" />
-      <div className="h-10 animate-pulse rounded-lg bg-muted" />
-      <div className="h-10 animate-pulse rounded-lg bg-muted" />
+    <div
+      className={cn("animate-pulse rounded-md bg-muted", className)}
+      aria-hidden
+    />
+  );
+}
+
+function RegistrationFieldSkeleton({
+  labelClassName,
+  placeholderClassName = "w-36",
+  showDescription = false,
+  descriptionClassName = "w-full",
+  withChevron = false,
+  phone = false,
+}: {
+  labelClassName: string;
+  placeholderClassName?: string;
+  showDescription?: boolean;
+  descriptionClassName?: string;
+  withChevron?: boolean;
+  phone?: boolean;
+}) {
+  return (
+    <div className="w-full">
+      <RegistrationSkeletonBlock className={cn("h-3.5", labelClassName)} />
+      {phone ? (
+        <div className="mt-2 flex h-9 items-center overflow-hidden rounded-md border border-input bg-background/80 shadow-sm">
+          <div className="flex h-full w-[4.5rem] shrink-0 items-center justify-center border-r border-input px-2">
+            <RegistrationSkeletonBlock className="h-3 w-8 bg-muted/80" />
+          </div>
+          <RegistrationSkeletonBlock
+            className={cn("ml-3 h-3 bg-muted/80", placeholderClassName)}
+          />
+        </div>
+      ) : (
+        <div className="mt-2 flex h-9 items-center rounded-md border border-input bg-background/80 px-3 shadow-sm">
+          <RegistrationSkeletonBlock
+            className={cn("h-3 bg-muted/80", placeholderClassName)}
+          />
+          {withChevron ? (
+            <RegistrationSkeletonBlock className="ml-auto h-4 w-4 shrink-0 rounded-sm bg-muted/70" />
+          ) : null}
+        </div>
+      )}
+      {showDescription ? (
+        <div className="mt-2 space-y-1">
+          <RegistrationSkeletonBlock className={cn("h-3", descriptionClassName)} />
+          {phone ? (
+            <RegistrationSkeletonBlock className="h-3 w-2/3" />
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function RegistrationFormFallback({ paid }: { paid: boolean }) {
+  return (
+    <div className="space-y-5" aria-busy="true" aria-live="polite">
+      <p className="sr-only">Memuat formulir pendaftaran…</p>
+
+      <div className="space-y-2">
+        <RegistrationSkeletonBlock className="h-7 w-32 bg-brand-pale/80" />
+        <RegistrationSkeletonBlock className="h-4 w-full max-w-[16rem]" />
+      </div>
+
+      <div className="space-y-4">
+        <RegistrationFieldSkeleton labelClassName="w-28" />
+        <RegistrationFieldSkeleton
+          labelClassName="w-12"
+          placeholderClassName="w-32"
+        />
+        <RegistrationFieldSkeleton
+          labelClassName="w-36"
+          placeholderClassName="w-28"
+          showDescription
+          descriptionClassName="w-full"
+          phone
+        />
+      </div>
+
+      <div className="space-y-4 rounded-xl border border-brand-periwinkle/35 bg-brand-pale/20 p-4">
+        <div className="space-y-1">
+          <RegistrationSkeletonBlock className="h-4 w-48 bg-brand-pale/80" />
+          <RegistrationSkeletonBlock className="h-3 w-full bg-muted/70" />
+        </div>
+        <RegistrationFieldSkeleton
+          labelClassName="w-36"
+          placeholderClassName="w-24"
+          withChevron
+        />
+        <RegistrationFieldSkeleton
+          labelClassName="w-40"
+          showDescription
+          descriptionClassName="w-full"
+        />
+      </div>
+
+      {paid ? (
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <RegistrationSkeletonBlock className="h-7 w-32 bg-brand-pale/80" />
+            <RegistrationSkeletonBlock className="h-4 w-52" />
+          </div>
+          <div className="space-y-1 rounded-xl border border-border bg-background px-4 py-3">
+            <RegistrationSkeletonBlock className="h-4 w-36" />
+            <RegistrationSkeletonBlock className="h-3 w-44 bg-muted/70" />
+            <RegistrationSkeletonBlock className="h-4 w-20 bg-brand-royal/15" />
+          </div>
+        </div>
+      ) : null}
+
+      <div className="space-y-3">
+        {paid ? (
+          <div className="space-y-2 rounded-xl border border-brand-periwinkle/35 bg-brand-pale/20 px-4 py-3">
+            <RegistrationSkeletonBlock className="h-4 w-full bg-brand-pale/80" />
+            <RegistrationSkeletonBlock className="h-4 w-4/5 bg-brand-pale/70" />
+          </div>
+        ) : (
+          <div className="flex items-start gap-3 rounded-xl border border-brand-periwinkle/35 bg-brand-pale/20 px-4 py-3">
+            <RegistrationSkeletonBlock className="mt-0.5 h-4 w-4 shrink-0 rounded-full bg-brand-pale/80" />
+            <RegistrationSkeletonBlock className="h-4 w-full" />
+          </div>
+        )}
+
+        <RegistrationSkeletonBlock className="h-11 w-full rounded-lg bg-brand-royal/15" />
+      </div>
     </div>
   );
 }
 
 export function ProgramRegistrationForm(props: ProgramRegistrationFormProps) {
   return (
-    <Suspense fallback={<RegistrationFormFallback />}>
+    <Suspense
+      fallback={
+        <RegistrationFormFallback paid={isPaidType(props.programType)} />
+      }
+    >
       <ProgramRegistrationFormInner {...props} />
     </Suspense>
   );
