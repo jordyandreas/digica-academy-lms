@@ -111,9 +111,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <footer className="mt-12 space-y-6 border-t border-zinc-200 pt-8">
           <p className="text-sm leading-relaxed text-zinc-600">
-            Curated from real student and mentor sessions inside Digica Academy.
-          </p>
-          <p className="text-sm leading-relaxed text-zinc-600">
             {getProgramHintForCategory(article.category)}
           </p>
           <div className="flex flex-wrap gap-3">
