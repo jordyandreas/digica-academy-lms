@@ -452,7 +452,7 @@ function ProgramRegistrationFormInner({
             {isWorkshopPromo ? (
               <div className="rounded-xl border border-brand-periwinkle/35 bg-brand-pale/20 px-4 py-3 text-sm text-brand-deep">
                 <p className="font-medium leading-snug">
-                  Kamu datang dari absensi workshop — pilih paket di bawah untuk
+                  Kamu datang dari absensi workshop — pilih promo di bawah untuk
                   kunci harga spesial.
                 </p>
               </div>
@@ -460,7 +460,7 @@ function ProgramRegistrationFormInner({
 
             <div className="space-y-2">
               <h2 className="text-lg font-semibold text-brand-deep">
-                Pilih paket <span className="text-destructive">*</span>
+                Pilih promo <span className="text-destructive">*</span>
               </h2>
               <p className="text-sm text-muted-foreground">
                 {isWorkshopPromo
@@ -489,7 +489,7 @@ function ProgramRegistrationFormInner({
                   description: offer.description,
                   price: formatIdr(offer.price),
                 }))}
-                emptyMessage="Paket untuk sumber ini belum tersedia. Hubungi admin Digica."
+                emptyMessage="Promo untuk sumber ini belum tersedia. Hubungi admin Digica."
               />
 
               {isWorkshopPromo ? (

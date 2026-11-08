@@ -17,7 +17,7 @@ export function WorkshopPromoBanner() {
         Tinggal selangkah lagi buat dapat harga spesial workshop!
       </p>
       <p className="mt-1 text-xs leading-snug text-muted-foreground">
-        Isi data di bawah, pilih paket, lalu lanjut chat admin untuk pembayaran.
+        Isi data di bawah, pilih promo, lalu lanjut chat admin untuk pembayaran.
       </p>
     </div>
   );

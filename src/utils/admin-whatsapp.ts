@@ -52,7 +52,7 @@ export function buildPaymentWhatsAppUrl(input: {
     `Promo: ${sourceLabel}`,
     `Nama: ${input.participantName}`,
     `No.Hp: ${input.phone}`,
-    `Paket: ${packageLabel}`,
+    `Pilihan: ${packageLabel}`,
     ...(includeFriend
       ? [`Nama teman: ${friendName}`, `No.Hp teman: ${friendPhone}`]
       : []),

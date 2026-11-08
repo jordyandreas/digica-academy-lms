@@ -31,8 +31,8 @@ const PACKAGE_LABELS: Record<RegistrationPackage, string> = {
 };
 
 const PACKAGE_SECTION_LABELS: Record<RegistrationPackage, string> = {
-  individual: "Paket 1: Individual",
-  bareng_teman: "Paket 2: Bareng teman",
+  individual: "Promo 1: Individual",
+  bareng_teman: "Promo 2: Bareng teman",
   social_standard: "Early Bird Price",
 };
 

@@ -122,7 +122,7 @@ export function programRegistrationFormSchema(
     if (!data.selected_package.trim()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Pilih paket.",
+        message: "Pilih promo.",
         path: ["selected_package"],
       });
       return;
@@ -131,7 +131,7 @@ export function programRegistrationFormSchema(
     if (!isPackageKeyForSource(registrationSource, data.selected_package)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Paket tidak tersedia untuk sumber pendaftaran ini.",
+        message: "Promo tidak tersedia untuk sumber pendaftaran ini.",
         path: ["selected_package"],
       });
       return;
