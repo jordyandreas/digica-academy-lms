@@ -119,10 +119,13 @@ export function RegistrationSuccessDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90dvh] w-[calc(100%-1.5rem)] flex-col gap-0 overflow-hidden rounded-2xl border-brand-periwinkle/70 p-0 sm:max-w-md">
+      <DialogContent
+        showCloseButton
+        className="flex max-h-[90dvh] w-[calc(100%-1.5rem)] flex-col gap-0 overflow-hidden rounded-2xl border-brand-periwinkle/70 p-0 sm:max-w-md"
+      >
         {isWorkshopPromo ? (
           <>
-            <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-4 pt-6">
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 pt-6">
               <DialogHeader className="items-center space-y-3 text-center sm:text-center">
                 <DialogTitle className="text-xl text-brand-deep">
                   Promo seat kamu sudah terdaftar!
@@ -148,7 +151,7 @@ export function RegistrationSuccessDialog({
                   emphasized
                 >
                   {paymentWhatsAppUrl ? (
-              <Button asChild className="h-11 w-full gap-2">
+                    <Button asChild className="h-11 w-full gap-2">
                       <a
                         href={paymentWhatsAppUrl}
                         target="_blank"
@@ -213,15 +216,6 @@ export function RegistrationSuccessDialog({
                 </SuccessStepCard>
               </div>
             </div>
-            <DialogFooter className="shrink-0 border-t border-brand-periwinkle/30 px-6 py-4 sm:justify-center">
-              <Button
-                type="button"
-                className="h-11 w-full"
-                onClick={() => onOpenChange(false)}
-              >
-                Selesai
-              </Button>
-            </DialogFooter>
           </>
         ) : (
           <>

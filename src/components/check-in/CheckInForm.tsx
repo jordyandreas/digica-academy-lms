@@ -57,7 +57,6 @@ export function CheckInForm({ identifier, data }: CheckInFormProps) {
     useState<SecureSeatInterest | null>(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isBannerPreviewOpen, setIsBannerPreviewOpen] = useState(false);
-  const [isDeferConfirmOpen, setIsDeferConfirmOpen] = useState(false);
   const [showPromoNudge, setShowPromoNudge] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -139,7 +138,6 @@ export function CheckInForm({ identifier, data }: CheckInFormProps) {
     setSuccessSessionNumber(null);
     setSuccessSecureSeatInterest(null);
     setShowPromoNudge(false);
-    setIsDeferConfirmOpen(false);
     form.reset(emptyCheckInValues);
   };
 
@@ -147,23 +145,6 @@ export function CheckInForm({ identifier, data }: CheckInFormProps) {
     setIsSuccessModalOpen(open);
     if (!open) {
       resetSuccessState();
-    }
-  };
-
-  const handleDeferClick = () => {
-    setIsDeferConfirmOpen(true);
-  };
-
-  const handleConfirmDefer = () => {
-    setIsDeferConfirmOpen(false);
-    handleSuccessModalChange(false);
-  };
-
-  const handleConfirmRegisterNow = () => {
-    setShowPromoNudge(false);
-    setIsDeferConfirmOpen(false);
-    if (bootcampRegistrationUrl) {
-      window.open(bootcampRegistrationUrl, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -599,30 +580,20 @@ export function CheckInForm({ identifier, data }: CheckInFormProps) {
                 )}
               >
                 {showSecureSeatCta ? (
-                  <div className="grid w-full grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className={cn("h-11 w-full", adminOutlineButtonClass)}
-                      onClick={handleDeferClick}
+                  <Button
+                    type="button"
+                    className="h-11 w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                    asChild
+                  >
+                    <a
+                      href={bootcampRegistrationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setShowPromoNudge(false)}
                     >
-                      Nanti Dulu
-                    </Button>
-                    <Button
-                      type="button"
-                      className="h-11 w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                      asChild
-                    >
-                      <a
-                        href={bootcampRegistrationUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setShowPromoNudge(false)}
-                      >
-                        Daftar Bootcamp
-                      </a>
-                    </Button>
-                  </div>
+                      Daftar Bootcamp
+                    </a>
+                  </Button>
                 ) : (
                   <Button
                     type="button"
@@ -649,27 +620,6 @@ export function CheckInForm({ identifier, data }: CheckInFormProps) {
           confirmLabel="Selesai"
         />
       )}
-
-      <FeedbackDialog
-        open={isDeferConfirmOpen}
-        onOpenChange={setIsDeferConfirmOpen}
-        variant="confirm"
-        title="Yakin ditunda dulu?"
-        description={
-          <>
-            Slot promo workshop terbatas lho. Kalau ditunda sekarang, bisa saja
-            keburu penuh sebelum sempat daftar.
-            <br />
-            <br />
-            Mau amankan harga spesialnya sekarang aja?
-          </>
-        }
-        descriptionClassName="max-w-none"
-        cancelLabel="Ya, Nanti Saja"
-        confirmLabel="Daftar Sekarang"
-        onConfirm={handleConfirmRegisterNow}
-        onCancel={handleConfirmDefer}
-      />
     </>
   );
 }
