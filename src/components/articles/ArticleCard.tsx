@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, Eye } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
   getArticleCover,
@@ -13,6 +13,7 @@ type ArticleCardProps = {
 
 export function ArticleCard({ article }: ArticleCardProps) {
   const coverSrc = getArticleCover(article.category);
+  const viewsLabel = `${article.viewCount.toLocaleString("en-US")} views`;
 
   return (
     <Link
@@ -57,6 +58,16 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 aria-hidden
               />
               <span>{article.displayDate}</span>
+            </span>
+            <span className="text-zinc-300" aria-hidden>
+              ·
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Eye
+                className="h-3.5 w-3.5 shrink-0 text-primary/80"
+                aria-hidden
+              />
+              <span>{viewsLabel}</span>
             </span>
           </div>
         </div>

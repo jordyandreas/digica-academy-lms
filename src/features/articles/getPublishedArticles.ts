@@ -3,7 +3,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Article, ArticleCategory } from "@/features/articles/data/articles";
 
 const ARTICLE_CARD_SELECT =
-  "slug, category, title, excerpt, published_at, display_date, read_time_minutes, read_time_display";
+  "slug, category, title, excerpt, published_at, display_date, read_time_minutes, read_time_display, view_count";
 
 const ARTICLE_DETAIL_SELECT = `${ARTICLE_CARD_SELECT}, body_html`;
 
@@ -23,6 +23,7 @@ type LmsArticleCardRow = {
   display_date: string | null;
   read_time_minutes: number | null;
   read_time_display: string | null;
+  view_count: number | null;
 };
 
 type LmsArticleDetailRow = LmsArticleCardRow & {
@@ -65,6 +66,7 @@ function mapRowToArticleCard(
     excerpt: row.excerpt,
     displayDate,
     readTimeLabel,
+    viewCount: row.view_count ?? 0,
   };
 }
 

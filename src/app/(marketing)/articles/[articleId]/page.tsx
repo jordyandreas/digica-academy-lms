@@ -2,13 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { CalendarDays, ChevronLeft, Clock } from "lucide-react";
+import { CalendarDays, ChevronLeft, Clock, Eye } from "lucide-react";
 import {
   getArticleCover,
   getProgramHintForCategory,
 } from "@/features/articles/data/articles";
 import { getPublishedArticleBySlug } from "@/features/articles/getPublishedArticles";
 import { ArticleBodyHtml } from "@/components/articles/ArticleBodyHtml";
+import { ArticleViewTracker } from "@/components/articles/ArticleViewTracker";
 import { Button } from "@/components/ui/button";
 import { HeaderAuth } from "@/components/auth/HeaderAuth";
 
@@ -41,9 +42,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!article) notFound();
 
   const coverSrc = getArticleCover(article.category);
+  const viewsLabel = `${article.viewCount.toLocaleString("en-US")} views`;
 
   return (
     <>
+      <ArticleViewTracker slug={article.slug} />
       <header className="glass-panel sticky top-0 z-10 border-b border-zinc-200/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Button asChild variant="ghost" size="sm" className="gap-2 text-primary">
@@ -95,6 +98,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <span className="inline-flex items-center gap-1.5">
                   <CalendarDays className="h-3.5 w-3.5" aria-hidden />
                   {article.displayDate}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Eye className="h-3.5 w-3.5" aria-hidden />
+                  {viewsLabel}
                 </span>
               </div>
             </div>

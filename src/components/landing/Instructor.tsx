@@ -26,7 +26,7 @@ const instructors = [
   },
   {
     name: "Katia Evelyn Husen",
-    role: "Data Analytics",
+    role: "Data Scientist (Analytics)",
     company: "Grab",
     image: "/images/instructors/katia-evelyn-husen.jpg",
   },

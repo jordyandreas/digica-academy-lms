@@ -7,12 +7,19 @@ export type Article = {
   excerpt: string;
   displayDate: string;
   readTimeLabel: string;
+  viewCount: number;
   bodyHtml: string;
 };
 
 export type ArticleCardModel = Pick<
   Article,
-  "slug" | "category" | "title" | "excerpt" | "displayDate" | "readTimeLabel"
+  | "slug"
+  | "category"
+  | "title"
+  | "excerpt"
+  | "displayDate"
+  | "readTimeLabel"
+  | "viewCount"
 >;
 
 export const ARTICLE_CATEGORY_FILTERS = [
