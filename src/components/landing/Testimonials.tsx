@@ -1,11 +1,12 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { TESTIMONIALS } from "@/features/testimonials/data/testimonials";
+import { getHomepageTestimonials } from "@/features/testimonials/data/testimonials";
 import { TestimonialCardGrid } from "@/components/testimonials/TestimonialCard";
 
 export default function Testimonials() {
   const reduceMotion = useReducedMotion();
+  const testimonials = getHomepageTestimonials();
 
   return (
     <section
@@ -38,12 +39,11 @@ export default function Testimonials() {
             </span>
           </h2>
           <p className="text-sm text-zinc-600 md:text-[0.95rem]">
-            Two Digica Data Science Bootcamp alumni who landed analyst and scientist roles
-            at Jago and DANA.
+            Digica Academy alumni who landed data roles at Jago, DANA, and Traveloka.
           </p>
         </motion.div>
 
-        <TestimonialCardGrid testimonials={TESTIMONIALS} />
+        <TestimonialCardGrid testimonials={testimonials} />
       </div>
     </section>
   );

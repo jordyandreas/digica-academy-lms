@@ -13,13 +13,16 @@ export type Testimonial = {
   storyNumber: number;
   photo: string;
   highlight: string;
-  quote: string;
-  qa: TestimonialQA[];
+  /** Short teaser; omit when alumni has no shared story */
+  quote?: string;
+  qa?: TestimonialQA[];
   tipsQuestion?: string;
   tips?: string;
   /** Short success copy when there is no interview Q&A */
   storyParagraphs?: string[];
 };
+
+export const HOMEPAGE_TESTIMONIAL_LIMIT = 3;
 
 export const TESTIMONIALS: Testimonial[] = [
   {
@@ -27,7 +30,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Keisha Aimee Puteri",
     role: "Data Analyst",
     company: "Jago",
-    companyLogo: "/images/companies/jago.svg",
+    companyLogo: "/images/companies/jago.png",
     batchLabel: "Alumni Batch 1 Digica Data Science Bootcamp",
     storyNumber: 1,
     photo: "/images/testimonials/keisha.png",
@@ -69,7 +72,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Darren",
     role: "Data Scientist",
     company: "DANA",
-    companyLogo: "/images/companies/dana.svg",
+    companyLogo: "/images/companies/dana.png",
     batchLabel: "Alumni Batch 2 Digica Data Science Bootcamp",
     storyNumber: 2,
     photo: "/images/testimonials/darren-story.jpg",
@@ -106,12 +109,36 @@ export const TESTIMONIALS: Testimonial[] = [
     tips:
       "Kalau lagi mulai, jangan cuma kejar tools atau algoritma terbaru. Kerjain beberapa project sampai selesai, dokumentasikan proses berpikirnya, dan biasain jelasin hasil ke orang yang nggak technical. Bootcamp kayak Digica ngebantu karena ritmenya mirip kerjaan beneran: ada deadline, ada review, dan ada konteks bisnisnya. Itu yang bikin transisi ke role Data Scientist terasa lebih natural.",
   },
+  {
+    id: "rusti-nella",
+    name: "Rusti Nella Rinawati Siahaan",
+    role: "Collection Strategy Analyst (Data Analyst)",
+    company: "Traveloka",
+    companyLogo: "/images/companies/traveloka.png",
+    batchLabel: "Alumni Batch 2 Digica Mini Bootcamp Data Analyst",
+    storyNumber: 3,
+    photo: "/images/testimonials/rusti-nella-story.png",
+    highlight:
+      "Sukses menjadi Collection Strategy Analyst (Data Analyst) di Traveloka",
+  },
 ];
+
+export function hasTestimonialStory(testimonial: Testimonial): boolean {
+  return Boolean(
+    (testimonial.qa && testimonial.qa.length > 0) ||
+      (testimonial.storyParagraphs && testimonial.storyParagraphs.length > 0) ||
+      testimonial.quote
+  );
+}
 
 export function getTestimonialById(id: string): Testimonial | undefined {
   return TESTIMONIALS.find((t) => t.id === id);
 }
 
 export function getAllTestimonialIds(): string[] {
-  return TESTIMONIALS.map((t) => t.id);
+  return TESTIMONIALS.filter(hasTestimonialStory).map((t) => t.id);
+}
+
+export function getHomepageTestimonials(): Testimonial[] {
+  return TESTIMONIALS.slice(0, HOMEPAGE_TESTIMONIAL_LIMIT);
 }

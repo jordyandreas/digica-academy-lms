@@ -5,6 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import {
   getTestimonialById,
   getAllTestimonialIds,
+  hasTestimonialStory,
 } from "@/features/testimonials/data/testimonials";
 import { TestimonialStory } from "@/components/testimonials/TestimonialStory";
 import { Button } from "@/components/ui/button";
@@ -23,12 +24,12 @@ export async function generateMetadata({
 }: TestimonialPageProps): Promise<Metadata> {
   const { testimonialId } = await params;
   const t = getTestimonialById(testimonialId);
-  if (!t) {
+  if (!t || !hasTestimonialStory(t)) {
     return { title: "Story" };
   }
   return {
     title: `${t.name} — ${t.company}`,
-    description: t.quote,
+    description: t.quote ?? t.highlight,
   };
 }
 
@@ -38,7 +39,7 @@ export default async function TestimonialDetailPage({
   const { testimonialId } = await params;
   const t = getTestimonialById(testimonialId);
 
-  if (!t) notFound();
+  if (!t || !hasTestimonialStory(t)) notFound();
 
   return (
     <>

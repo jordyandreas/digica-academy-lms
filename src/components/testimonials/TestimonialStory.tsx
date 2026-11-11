@@ -65,14 +65,16 @@ export function TestimonialStory({ testimonial }: TestimonialStoryProps) {
           </p>
         </div>
 
-        <div className="border-t border-zinc-100 bg-zinc-50/80 px-6 py-6 md:px-8">
-          <blockquote className="text-[15px] leading-relaxed text-zinc-800 md:text-base">
-            “{testimonial.quote}”
-          </blockquote>
-        </div>
+        {testimonial.quote ? (
+          <div className="border-t border-zinc-100 bg-zinc-50/80 px-6 py-6 md:px-8">
+            <blockquote className="text-[15px] leading-relaxed text-zinc-800 md:text-base">
+              “{testimonial.quote}”
+            </blockquote>
+          </div>
+        ) : null}
       </motion.header>
 
-      {testimonial.qa.length > 0 ? (
+      {testimonial.qa && testimonial.qa.length > 0 ? (
         <div className="mt-10 space-y-6">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">
             The story

@@ -4,8 +4,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { CompanyLockup } from "@/components/testimonials/CompanyLockup";
 
 const ALUMNI_COMPANIES = [
-  { company: "Jago", logo: "/images/companies/jago.svg" },
-  { company: "DANA", logo: "/images/companies/dana.svg" },
+  { company: "Jago", logo: "/images/companies/jago.png" },
+  { company: "DANA", logo: "/images/companies/dana.png" },
+  { company: "Traveloka", logo: "/images/companies/traveloka.png" },
 ] as const;
 
 export default function SocialProof() {

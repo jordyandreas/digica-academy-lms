@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Testimonials",
   description:
-    "Alumni stories from Digica Academy Data Science Bootcamp — Keisha at Jago and Darren at DANA.",
+    "Alumni stories from Digica Academy — roles at Jago, DANA, and Traveloka.",
 };
 
 export default function TestimonialsIndexPage() {
@@ -36,7 +36,7 @@ export default function TestimonialsIndexPage() {
             From bootcamp to data careers
           </h1>
           <p className="mx-auto max-w-2xl text-sm text-zinc-600 md:mx-0 md:text-[15px]">
-            Two Digica Data Science Bootcamp alumni who landed roles at Jago and DANA.
+            Digica Academy alumni who landed data roles at Jago, DANA, and Traveloka.
           </p>
         </div>
 
