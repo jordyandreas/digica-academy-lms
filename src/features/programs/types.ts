@@ -15,6 +15,8 @@ export type ProgramRow = {
   end_time: string | null;
   schedule_days: unknown;
   price: number | null;
+  promo_individual_price: number | null;
+  promo_bareng_teman_price: number | null;
   session_count: number | null;
   status: ProgramStatus;
   public_code: string | null;
@@ -43,6 +45,10 @@ export type ProgramDetailModel = {
   typeLabel: string;
   dateLabel: string;
   priceLabel: string;
+  /** Normal / list price (raw). */
+  price: number | null;
+  promoIndividualPrice: number | null;
+  promoBarengTemanPrice: number | null;
   sessionsLabel: string | null;
   batchLabel: string | null;
   scheduleDays: string | null;

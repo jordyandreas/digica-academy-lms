@@ -13,7 +13,7 @@ import { formatScheduleDateLines } from "@/lib/date-utils";
 import { isUuid } from "@/utils/program-public-link";
 
 const SELECT_COLUMNS =
-  "id, name, type, year, batch, start_date, end_date, start_time, end_time, schedule_days, price, session_count, status, public_code, public_slug";
+  "id, name, type, year, batch, start_date, end_date, start_time, end_time, schedule_days, price, promo_individual_price, promo_bareng_teman_price, session_count, status, public_code, public_slug";
 
 const PROGRAM_IMAGES: Record<ProgramType, string> = {
   workshop: "/images/programs/workshop.png",
@@ -81,6 +81,13 @@ function typeLabel(type: ProgramType): string {
 
 function formatIdr(amount: number): string {
   return `Rp ${Math.round(amount).toLocaleString("id-ID")}`;
+}
+
+function toNullablePositivePrice(value: unknown): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+    return null;
+  }
+  return Math.round(value);
 }
 
 function priceLabel(row: ProgramRow): string {
@@ -222,6 +229,9 @@ function toDetailModel(
     typeLabel: typeLabel(row.type),
     dateLabel: dateLabel(row),
     priceLabel: priceLabel(row),
+    price: toNullablePositivePrice(row.price),
+    promoIndividualPrice: toNullablePositivePrice(row.promo_individual_price),
+    promoBarengTemanPrice: toNullablePositivePrice(row.promo_bareng_teman_price),
     sessionsLabel: sessionsLabel(row),
     batchLabel: batchLabel(row),
     scheduleDays: formatScheduleDays(row.schedule_days),

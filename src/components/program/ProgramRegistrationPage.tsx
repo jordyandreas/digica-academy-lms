@@ -152,7 +152,15 @@ export async function ProgramRegistrationPage({
 
           <Suspense fallback={null}>
 
-            <WorkshopPromoBanner />
+            <WorkshopPromoBanner
+
+              normalPrice={program.price}
+
+              promoIndividualPrice={program.promoIndividualPrice}
+
+              promoBarengTemanPrice={program.promoBarengTemanPrice}
+
+            />
 
           </Suspense>
 

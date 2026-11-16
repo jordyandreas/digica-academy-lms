@@ -70,7 +70,9 @@ function buildOffer(
   price: number,
 ): RegistrationOffer {
   const perPerson =
-    selectedPackage === "bareng_teman" ? " / orang (minimal 2 orang)" : " / orang";
+    selectedPackage === "bareng_teman"
+      ? " / orang (minimal 2 orang). Kamu & temanmu masing-masing daftar sendiri."
+      : " / orang";
 
   return {
     package: selectedPackage,

@@ -510,12 +510,17 @@ function ProgramRegistrationFormInner({
 
               {needsFriend ? (
                 <div className="space-y-3 pt-2">
+                  <p className="text-sm leading-snug text-muted-foreground">
+                    Temanmu belum otomatis terdaftar — isi form di sini hanya
+                    untuk mendapatkan promo. Temanmu tetap harus melakukan
+                    registrasi sendiri.
+                  </p>
                   <TextInputController
                     form={form}
                     name="friend_name"
                     label="Nama Teman"
                     required
-                    placeholder="Nama teman yang join bersama"
+                    placeholder="Nama teman yang ikut bareng"
                   />
                   <PhoneInputController
                     form={form}
