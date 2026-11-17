@@ -1,5 +1,7 @@
 import { createProgramsReaderClient } from "@/lib/supabase/programs-reader";
 
+export { isRemoteImageSrc } from "@/features/programs/isRemoteImageSrc";
+
 function asOptionalString(value: unknown): string | null {
   if (value == null) return null;
   if (typeof value === "string") {
@@ -11,14 +13,21 @@ function asOptionalString(value: unknown): string | null {
 
 export type ProgramPublicContent = {
   registrationBannerUrl: string | null;
+  promoBannerUrl: string | null;
   summaryHtml: string | null;
+};
+
+const EMPTY_PUBLIC_CONTENT: ProgramPublicContent = {
+  registrationBannerUrl: null,
+  promoBannerUrl: null,
+  summaryHtml: null,
 };
 
 export async function fetchProgramPublicContent(
   programId: string,
 ): Promise<ProgramPublicContent> {
   if (!programId) {
-    return { registrationBannerUrl: null, summaryHtml: null };
+    return { ...EMPTY_PUBLIC_CONTENT };
   }
 
   try {
@@ -26,23 +35,24 @@ export async function fetchProgramPublicContent(
 
     const { data, error } = await supabase
       .from("program_public_contents")
-      .select("registration_banner_url, summary_html")
+      .select("registration_banner_url, promo_banner_url, summary_html")
       .eq("program_id", programId)
       .maybeSingle();
 
     if (error) {
       if (error.code === "42703") {
-        return { registrationBannerUrl: null, summaryHtml: null };
+        return { ...EMPTY_PUBLIC_CONTENT };
       }
       console.error(
         "[programs] public content fetch failed:",
         error.message,
       );
-      return { registrationBannerUrl: null, summaryHtml: null };
+      return { ...EMPTY_PUBLIC_CONTENT };
     }
 
     return {
       registrationBannerUrl: asOptionalString(data?.registration_banner_url),
+      promoBannerUrl: asOptionalString(data?.promo_banner_url),
       summaryHtml: asOptionalString(data?.summary_html),
     };
   } catch (err) {
@@ -51,7 +61,7 @@ export async function fetchProgramPublicContent(
         ? err.message
         : "Failed to load program public content.";
     console.error("[programs] public content exception:", message);
-    return { registrationBannerUrl: null, summaryHtml: null };
+    return { ...EMPTY_PUBLIC_CONTENT };
   }
 }
 
@@ -61,8 +71,4 @@ export async function fetchRegistrationBannerUrl(
 ): Promise<string | null> {
   const content = await fetchProgramPublicContent(programId);
   return content.registrationBannerUrl;
-}
-
-export function isRemoteImageSrc(src: string): boolean {
-  return src.startsWith("http://") || src.startsWith("https://");
 }

@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { CalendarDays, Clock3, Sparkles } from "lucide-react";
 import { ProgramRegistrationSummary } from "@/components/program/ProgramRegistrationSummary";
-import { isRemoteImageSrc } from "@/features/programs/programPublicContent";
+import { RegistrationBannerSlider } from "@/components/program/RegistrationBannerSlider";
+import { isRemoteImageSrc } from "@/features/programs/isRemoteImageSrc";
 import {
   formatProgramDateRange,
   formatProgramTimeRange,
@@ -15,6 +16,8 @@ type ProgramRegistrationHeroProps = {
   endTime: string | null;
   summaryHtml: string | null;
   registrationBannerUrl: string | null;
+  promoBannerUrl?: string | null;
+  enablePromoSlide?: boolean;
   fallbackImageSrc: string;
 };
 
@@ -26,9 +29,33 @@ export function ProgramRegistrationHero({
   endTime,
   summaryHtml,
   registrationBannerUrl,
+  promoBannerUrl = null,
+  enablePromoSlide = false,
   fallbackImageSrc,
 }: ProgramRegistrationHeroProps) {
   const hasCustomBanner = Boolean(registrationBannerUrl);
+  const trimmedPromo = promoBannerUrl?.trim() || null;
+  const showPromoSlider =
+    enablePromoSlide &&
+    Boolean(registrationBannerUrl?.trim()) &&
+    Boolean(trimmedPromo);
+
+  if (showPromoSlider && registrationBannerUrl) {
+    return (
+      <RegistrationBannerSlider
+        slides={[
+          {
+            src: registrationBannerUrl,
+            alt: `${title} banner`,
+          },
+          {
+            src: trimmedPromo!,
+            alt: `${title} promo poster`,
+          },
+        ]}
+      />
+    );
+  }
 
   if (hasCustomBanner) {
     return (
@@ -40,8 +67,8 @@ export function ProgramRegistrationHero({
           height={630}
           priority
           unoptimized={isRemoteImageSrc(registrationBannerUrl!)}
-          className="h-auto w-full object-cover"
-          sizes="(max-width: 512px) 100vw, 512px"
+          className="h-auto w-full object-contain"
+          sizes="(max-width: 1024px) 100vw, 560px"
         />
       </div>
     );
@@ -57,7 +84,7 @@ export function ProgramRegistrationHero({
           height={400}
           priority
           className="h-auto w-full object-cover"
-          sizes="(max-width: 512px) 100vw, 512px"
+          sizes="(max-width: 1024px) 100vw, 560px"
         />
       </div>
 

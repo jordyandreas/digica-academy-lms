@@ -214,8 +214,13 @@ function toDetailModel(
   row: ProgramRow,
   publicContent: {
     registrationBannerUrl: string | null;
+    promoBannerUrl: string | null;
     summaryHtml: string | null;
-  } = { registrationBannerUrl: null, summaryHtml: null },
+  } = {
+    registrationBannerUrl: null,
+    promoBannerUrl: null,
+    summaryHtml: null,
+  },
 ): ProgramDetailModel | null {
   const identifier = programPublicIdentifier(row);
   if (!identifier) return null;
@@ -246,6 +251,7 @@ function toDetailModel(
     year: row.year,
     publicSlug: identifier,
     registrationBannerUrl,
+    promoBannerUrl: publicContent.promoBannerUrl,
     fallbackImageSrc: imageSrc(row.type),
     imageSrc: registrationBannerUrl ?? imageSrc(row.type),
   };

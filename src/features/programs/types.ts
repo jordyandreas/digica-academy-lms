@@ -64,6 +64,8 @@ export type ProgramDetailModel = {
   publicSlug: string;
   /** Registration banner from admin, if uploaded. */
   registrationBannerUrl: string | null;
+  /** Workshop promo poster for registration slider, if uploaded. */
+  promoBannerUrl: string | null;
   /** Default type image when no registration banner. */
   fallbackImageSrc: string;
   /** Resolved hero image (banner or fallback). */

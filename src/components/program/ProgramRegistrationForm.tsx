@@ -448,7 +448,7 @@ function ProgramRegistrationFormInner({
         </div>
 
         {paid ? (
-          <div className="space-y-3">
+          <div id="promo" className="scroll-mt-24 space-y-3">
             {isWorkshopPromo ? (
               <div className="rounded-xl border border-brand-periwinkle/35 bg-brand-pale/20 px-4 py-3 text-sm text-brand-deep">
                 <p className="font-medium leading-snug">
@@ -460,7 +460,8 @@ function ProgramRegistrationFormInner({
 
             <div className="space-y-2">
               <h2 className="text-lg font-semibold text-brand-deep">
-                Pilih promo <span className="text-destructive">*</span>
+                {isWorkshopPromo ? "Pilih promo spesial workshop" : "Pilih promo"}{" "}
+                <span className="text-destructive">*</span>
               </h2>
               <p className="text-sm text-muted-foreground">
                 {isWorkshopPromo
