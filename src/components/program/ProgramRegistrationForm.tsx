@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Info, ShieldCheck } from "lucide-react";
+import { Info, Loader2, ShieldCheck } from "lucide-react";
 import {
   PhoneInputController,
   RadioCardGroupController,
@@ -269,7 +269,9 @@ function ProgramRegistrationFormInner({
       return;
     }
 
-    const stillValid = offers.some((offer) => offer.package === selectedPackage);
+    const stillValid = offers.some(
+      (offer) => offer.package === selectedPackage,
+    );
     if (!stillValid) {
       form.setValue("selected_package", "");
     }
@@ -369,7 +371,9 @@ function ProgramRegistrationFormInner({
         )}
       >
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-brand-deep">Data Peserta</h2>
+          <h2 className="text-lg font-semibold text-brand-deep">
+            Data Peserta
+          </h2>
           <p className="text-sm text-muted-foreground">
             Kolom bertanda{" "}
             <span className="font-semibold text-destructive">*</span> wajib
@@ -460,7 +464,9 @@ function ProgramRegistrationFormInner({
 
             <div className="space-y-2">
               <h2 className="text-lg font-semibold text-brand-deep">
-                {isWorkshopPromo ? "Pilih promo spesial workshop" : "Pilih promo"}{" "}
+                {isWorkshopPromo
+                  ? "Pilih promo spesial workshop"
+                  : "Pilih promo"}{" "}
                 <span className="text-destructive">*</span>
               </h2>
               <p className="text-sm text-muted-foreground">
@@ -470,82 +476,103 @@ function ProgramRegistrationFormInner({
               </p>
             </div>
 
-            {offersLoading ? (
-              <p className="text-sm text-muted-foreground">Loading packages…</p>
-            ) : null}
             {offersError ? (
               <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
                 {offersError}
               </p>
             ) : null}
 
-            <div className="space-y-2">
-              <RadioCardGroupController
-                form={form}
-                name="selected_package"
-                required
-                options={offers.map((offer) => ({
-                  value: offer.package,
-                  label: offer.label,
-                  description: offer.description,
-                  price: formatIdr(offer.price),
-                }))}
-                emptyMessage="Promo untuk sumber ini belum tersedia. Hubungi admin Digica."
-              />
-
-              {isWorkshopPromo ? (
-                <p className="pt-1 text-sm font-medium text-muted-foreground">
-                  tersisa{" "}
-                  <span
-                    className={cn(
-                      "inline-block font-bold transition-all duration-300",
-                      getPromoSlotNumberClass(remainingSlots, initialSlots),
-                      slotPulse && "scale-110",
-                    )}
+            {offersLoading ? (
+              <div
+                className="space-y-2"
+                role="status"
+                aria-live="polite"
+                aria-busy="true"
+              >
+                {[0, 1].map((index) => (
+                  <div
+                    key={index}
+                    className="w-full animate-pulse rounded-xl border border-border bg-background px-4 py-3"
                   >
-                    {remainingSlots}
-                  </span>{" "}
-                  slot
-                </p>
-              ) : null}
-
-              {needsFriend ? (
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-start gap-2 border-l-4 border-amber-500 pl-3">
-                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-                    <p className="text-sm leading-snug text-foreground">
-                      <span className="font-semibold text-amber-700 dark:text-amber-500">
-                        Temanmu belum otomatis terdaftar.
-                      </span>{" "}
-                      Isi form di sini hanya untuk mendapatkan promo — temanmu{" "}
-                      <span className="font-semibold underline decoration-amber-500 decoration-2 underline-offset-2">
-                        tetap harus melakukan registrasi sendiri
-                      </span>
-                      .
-                    </p>
+                    <div className="h-4 w-1/3 rounded-md bg-brand-pale" />
+                    <div className="mt-2 h-3 w-2/3 rounded-md bg-muted" />
+                    <div className="mt-2 h-4 w-1/4 rounded-md bg-brand-pale" />
                   </div>
-                  <TextInputController
-                    form={form}
-                    name="friend_name"
-                    label="Nama Teman"
-                    required
-                    placeholder="Nama teman yang ikut bareng"
-                  />
-                  <PhoneInputController
-                    form={form}
-                    name="friend_phone"
-                    label="WhatsApp Teman"
-                    required
-                    placeholder="812 3456 7890"
-                    maxDigitsMessage="Nomor WhatsApp teman maksimal 15 digit."
-                    description="Pilih kode negara, lalu isi nomor tanpa +62 atau angka 0 di depan."
-                    componentProps={{
-                      input: { id: "reg-friend-phone" },
-                    }}
-                  />
-                </div>
-              ) : null}
-            </div>
+                ))}
+                <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-brand-royal" />
+                  Memuat pilihan promo…
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <RadioCardGroupController
+                  form={form}
+                  name="selected_package"
+                  required
+                  options={offers.map((offer) => ({
+                    value: offer.package,
+                    label: offer.label,
+                    description: offer.description,
+                    price: formatIdr(offer.price),
+                  }))}
+                  emptyMessage="Promo untuk sumber ini belum tersedia. Hubungi admin Digica."
+                />
+
+                {isWorkshopPromo ? (
+                  <p className="pt-1 text-sm font-medium text-muted-foreground">
+                    tersisa{" "}
+                    <span
+                      className={cn(
+                        "inline-block font-bold transition-all duration-300",
+                        getPromoSlotNumberClass(remainingSlots, initialSlots),
+                        slotPulse && "scale-110",
+                      )}
+                    >
+                      {remainingSlots}
+                    </span>{" "}
+                    slot
+                  </p>
+                ) : null}
+
+                {needsFriend ? (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-start gap-2 border-l-4 border-amber-500 pl-3">
+                      <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                      <p className="text-sm leading-snug text-foreground">
+                        <span className="font-semibold text-amber-700 dark:text-amber-500">
+                          Temanmu belum otomatis terdaftar.
+                        </span>{" "}
+                        Isi form di sini hanya untuk mendapatkan promo — temanmu{" "}
+                        <span className="font-semibold underline decoration-amber-500 decoration-2 underline-offset-2">
+                          tetap harus melakukan registrasi sendiri
+                        </span>
+                        .
+                      </p>
+                    </div>
+                    <TextInputController
+                      form={form}
+                      name="friend_name"
+                      label="Nama Teman"
+                      required
+                      placeholder="Nama teman yang ikut bareng"
+                    />
+                    <PhoneInputController
+                      form={form}
+                      name="friend_phone"
+                      label="WhatsApp Teman"
+                      required
+                      placeholder="812 3456 7890"
+                      maxDigitsMessage="Nomor WhatsApp teman maksimal 15 digit."
+                      description="Pilih kode negara, lalu isi nomor tanpa +62 atau angka 0 di depan."
+                      componentProps={{
+                        input: { id: "reg-friend-phone" },
+                      }}
+                    />
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
         ) : null}
 
@@ -649,10 +676,10 @@ function RegistrationFieldSkeleton({
       )}
       {showDescription ? (
         <div className="mt-2 space-y-1">
-          <RegistrationSkeletonBlock className={cn("h-3", descriptionClassName)} />
-          {phone ? (
-            <RegistrationSkeletonBlock className="h-3 w-2/3" />
-          ) : null}
+          <RegistrationSkeletonBlock
+            className={cn("h-3", descriptionClassName)}
+          />
+          {phone ? <RegistrationSkeletonBlock className="h-3 w-2/3" /> : null}
         </div>
       ) : null}
     </div>
