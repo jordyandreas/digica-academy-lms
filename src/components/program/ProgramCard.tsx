@@ -73,9 +73,16 @@ export function ProgramCard({ program }: ProgramCardProps) {
         <div className="my-4 mt-auto h-px w-full bg-zinc-100" aria-hidden />
 
         <div className="flex items-center justify-between gap-3">
-          <span className="text-lg font-bold tabular-nums text-primary">
-            {program.priceLabel}
-          </span>
+          <div className="flex min-w-0 flex-col leading-tight">
+            {program.defaultPriceLabel ? (
+              <span className="text-xs font-medium tabular-nums text-zinc-400 line-through">
+                {program.defaultPriceLabel}
+              </span>
+            ) : null}
+            <span className="text-lg font-bold tabular-nums text-primary">
+              {program.priceLabel}
+            </span>
+          </div>
           {hasDetailLink ? (
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-sm transition-colors group-hover:bg-primary/90">
               Register

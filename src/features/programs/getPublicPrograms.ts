@@ -13,7 +13,7 @@ import { formatScheduleDateLines } from "@/lib/date-utils";
 import { isUuid } from "@/utils/program-public-link";
 
 const SELECT_COLUMNS =
-  "id, name, type, year, batch, start_date, end_date, start_time, end_time, schedule_days, price, promo_individual_price, promo_bareng_teman_price, session_count, status, public_code, public_slug";
+  "id, name, type, year, batch, start_date, end_date, start_time, end_time, schedule_days, price, default_price, promo_individual_price, promo_bareng_teman_price, session_count, status, public_code, public_slug";
 
 const PROGRAM_IMAGES: Record<ProgramType, string> = {
   workshop: "/images/programs/workshop.png",
@@ -95,6 +95,15 @@ function priceLabel(row: ProgramRow): string {
   if (amount == null) return "—";
   if (amount === 0) return "Free";
   return formatIdr(amount);
+}
+
+function defaultPriceLabel(row: ProgramRow): string | null {
+  const price = toNullablePositivePrice(row.price);
+  const defaultPrice = toNullablePositivePrice(row.default_price);
+  if (price == null || defaultPrice == null || defaultPrice <= price) {
+    return null;
+  }
+  return formatIdr(defaultPrice);
 }
 
 function formatDate(iso: string | null): string | null {
@@ -203,6 +212,7 @@ function toCardModel(row: ProgramRow): ProgramCardModel {
     typeLabel: typeLabel(row.type),
     dateLabel: dateLabel(row),
     priceLabel: priceLabel(row),
+    defaultPriceLabel: defaultPriceLabel(row),
     sessionsLabel: sessionsLabel(row),
     batchLabel: batchLabel(row),
     publicSlug: row.public_slug,

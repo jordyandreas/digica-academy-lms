@@ -14,7 +14,10 @@ export type ProgramRow = {
   start_time: string | null;
   end_time: string | null;
   schedule_days: unknown;
+  /** Early bird / charged price. */
   price: number | null;
+  /** Normal price shown struck through when higher than `price`. */
+  default_price: number | null;
   promo_individual_price: number | null;
   promo_bareng_teman_price: number | null;
   session_count: number | null;
@@ -31,6 +34,8 @@ export type ProgramCardModel = {
   typeLabel: string;
   dateLabel: string;
   priceLabel: string;
+  /** Struck-through normal price label; null when there is no discount. */
+  defaultPriceLabel: string | null;
   sessionsLabel: string | null;
   batchLabel: string | null;
   publicSlug: string | null;
