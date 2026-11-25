@@ -511,11 +511,19 @@ function ProgramRegistrationFormInner({
 
               {needsFriend ? (
                 <div className="space-y-3 pt-2">
-                  <p className="text-sm leading-snug text-muted-foreground">
-                    Temanmu belum otomatis terdaftar — isi form di sini hanya
-                    untuk mendapatkan promo. Temanmu tetap harus melakukan
-                    registrasi sendiri.
-                  </p>
+                  <div className="flex items-start gap-2 border-l-4 border-amber-500 pl-3">
+                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                    <p className="text-sm leading-snug text-foreground">
+                      <span className="font-semibold text-amber-700 dark:text-amber-500">
+                        Temanmu belum otomatis terdaftar.
+                      </span>{" "}
+                      Isi form di sini hanya untuk mendapatkan promo — temanmu{" "}
+                      <span className="font-semibold underline decoration-amber-500 decoration-2 underline-offset-2">
+                        tetap harus melakukan registrasi sendiri
+                      </span>
+                      .
+                    </p>
+                  </div>
                   <TextInputController
                     form={form}
                     name="friend_name"
